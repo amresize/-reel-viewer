@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reel Viewer</title>
     <style>
-        /* --- Reset & Base --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
@@ -25,20 +24,8 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
         
-        h1 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #1a1a1a;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .subtitle {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 24px;
-        }
+        h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; color: #1a1a1a; }
+        .subtitle { color: #666; font-size: 14px; margin-bottom: 24px; }
         
         .search-box {
             display: flex;
@@ -52,16 +39,9 @@
             border-radius: 10px;
             font-size: 15px;
             outline: none;
-            transition: border-color 0.2s;
             background: #fafafa;
         }
-        .search-box input:focus {
-            border-color: #0095f6;
-            background: white;
-        }
-        .search-box input::placeholder {
-            color: #999;
-        }
+        .search-box input:focus { border-color: #0095f6; background: white; }
         .search-box button {
             padding: 12px 28px;
             background: #0095f6;
@@ -71,12 +51,8 @@
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
-            white-space: nowrap;
         }
-        .search-box button:hover {
-            background: #0077cc;
-        }
+        .search-box button:hover { background: #0077cc; }
         
         #error {
             color: #d32f2f;
@@ -98,11 +74,6 @@
             gap: 10px;
             flex-wrap: wrap;
         }
-        .share-section .label {
-            font-size: 13px;
-            color: #666;
-            font-weight: 500;
-        }
         .share-section input {
             flex: 1;
             min-width: 150px;
@@ -111,7 +82,6 @@
             font-size: 13px;
             color: #333;
             outline: none;
-            padding: 4px 0;
             font-family: monospace;
         }
         .share-section button {
@@ -121,12 +91,6 @@
             font-weight: 600;
             font-size: 13px;
             cursor: pointer;
-            padding: 4px 10px;
-            border-radius: 6px;
-            transition: background 0.2s;
-        }
-        .share-section button:hover {
-            background: rgba(0, 149, 246, 0.1);
         }
         
         #player-container {
@@ -140,29 +104,25 @@
             color: #999;
             font-size: 14px;
             padding: 30px 20px;
-            overflow: hidden;
             border: 1px dashed #ddd;
         }
-        #player-container .placeholder-icon {
-            font-size: 48px;
-            margin-bottom: 12px;
-            opacity: 0.5;
-        }
+        #player-container .placeholder-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
         
+        .loading { color: #0095f6; animation: pulse 1.2s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        
+        /* Instagram embed styling */
         #player-container .instagram-media {
             max-width: 100% !important;
             min-width: 100% !important;
             width: 100% !important;
             margin: 0 auto !important;
         }
-        
         #player-container iframe {
             max-width: 100% !important;
             border: none !important;
             border-radius: 8px;
-            background: white;
         }
-        
         #player-container > blockquote {
             margin: 0 !important;
             max-width: 100% !important;
@@ -177,29 +137,13 @@
             margin-top: 8px;
             padding: 4px 0;
         }
-        .instagram-attribution a {
-            color: #0095f6;
-            text-decoration: none;
-        }
-        .instagram-attribution a:hover {
-            text-decoration: underline;
-        }
-        
-        .loading {
-            color: #0095f6;
-            animation: pulse 1.2s ease-in-out infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
+        .instagram-attribution a { color: #0095f6; text-decoration: none; }
         
         @media (max-width: 500px) {
             .container { padding: 20px 16px; }
             .search-box { flex-direction: column; }
-            .search-box button { width: 100%; justify-content: center; }
+            .search-box button { width: 100%; }
             .share-section { flex-direction: column; align-items: stretch; }
-            .share-section input { min-width: auto; }
         }
     </style>
 </head>
@@ -233,7 +177,6 @@
     </div>
 
     <script>
-        // --- DOM Elements ---
         const input = document.getElementById('reelInput');
         const loadBtn = document.getElementById('loadButton');
         const player = document.getElementById('player-container');
@@ -243,7 +186,6 @@
         const copyBtn = document.getElementById('copyButton');
         const attribution = document.getElementById('attribution');
         
-        // --- Helper Functions ---
         function normalizeInstagramUrl(input) {
             let url = input.trim();
             if (/^[A-Za-z0-9_-]+$/.test(url)) {
@@ -264,81 +206,53 @@
             return `${window.location.origin}${window.location.pathname}?reel=${reelId}`;
         }
         
-        // --- Load Reel with Proper Script Reload ---
-        async function loadReel(rawInput) {
+        // --- THE FIX: Use a different approach ---
+        function loadReelWithIframe(rawInput) {
             try {
                 const normalizedUrl = normalizeInstagramUrl(rawInput);
-                player.innerHTML = `<span class="loading">⏳ Loading Reel...</span>`;
-                errorDiv.style.display = 'none';
-                errorDiv.textContent = '';
-                attribution.style.display = 'none';
-                
                 const reelId = extractReelId(normalizedUrl);
+                
                 if (!reelId) {
-                    throw new Error('Invalid Instagram Reel URL. Please paste a link like: https://instagram.com/reel/...');
+                    throw new Error('Invalid Instagram Reel URL.');
                 }
                 
                 input.value = normalizedUrl;
+                errorDiv.style.display = 'none';
+                errorDiv.textContent = '';
                 
-                // Call Meta's tokenless oEmbed API
-                const apiUrl = `https://graph.facebook.com/v25.0/instagram_oembed?url=${encodeURIComponent(normalizedUrl)}`;
-                const response = await fetch(apiUrl);
+                // Show loading
+                player.innerHTML = `<span class="loading">⏳ Loading Reel...</span>`;
                 
-                if (!response.ok) {
-                    let errorMsg = 'Failed to load Reel. ';
-                    try {
-                        const errorData = await response.json();
-                        errorMsg += errorData.error?.message || 'Make sure it\'s public and embedding is enabled.';
-                    } catch {
-                        errorMsg += 'Make sure it\'s public and embedding is enabled.';
-                    }
-                    throw new Error(errorMsg);
-                }
+                // Build the embed URL - this is a different approach
+                const embedUrl = `https://www.instagram.com/reel/${reelId}/embed`;
                 
-                const data = await response.json();
+                // Create an iframe directly
+                const iframe = document.createElement('iframe');
+                iframe.src = embedUrl;
+                iframe.width = '100%';
+                iframe.height = '600';
+                iframe.frameBorder = '0';
+                iframe.scrolling = 'no';
+                iframe.allowFullscreen = true;
+                iframe.style.borderRadius = '8px';
+                iframe.style.backgroundColor = 'white';
                 
-                // --- FIX: Properly reload Instagram's embed script ---
-                // Insert the embed HTML
-                player.innerHTML = data.html;
-                
-                // Remove any existing Instagram embed script
-                const existingScript = document.querySelector('script[src*="instagram.com/embed.js"]');
-                if (existingScript) {
-                    existingScript.remove();
-                }
-                
-                // Create and add a fresh script
-                const script = document.createElement('script');
-                script.src = '//www.instagram.com/embed.js';
-                script.async = true;
-                script.defer = true;
-                
-                script.onload = function() {
-                    console.log('Instagram embed script loaded successfully');
-                };
-                
-                script.onerror = function() {
-                    console.warn('Instagram embed script failed to load');
-                };
-                
-                document.head.appendChild(script);
-                // --- END OF FIX ---
-                
-                // Show Instagram attribution
-                attribution.style.display = 'block';
+                // Clear and add the iframe
+                player.innerHTML = '';
+                player.appendChild(iframe);
                 
                 // Show share link
                 const shareUrl = buildShareLink(reelId);
                 shareInput.value = shareUrl;
                 shareSection.style.display = 'flex';
+                attribution.style.display = 'block';
                 
                 if (window.history && window.history.pushState) {
-                    const newUrl = `${window.location.pathname}?reel=${reelId}`;
-                    window.history.pushState({ reelId }, '', newUrl);
+                    window.history.pushState({ reelId }, '', `?reel=${reelId}`);
                 }
                 
             } catch (err) {
-                errorDiv.textContent = err.message || 'Something went wrong. Please try again.';
+                errorDiv.textContent = err.message;
                 errorDiv.style.display = 'block';
                 player.innerHTML = `
                     <div class="placeholder-icon">🎬</div>
@@ -349,14 +263,72 @@
             }
         }
         
-        // --- Load from URL parameter on page load ---
+        // Alternative: Use oEmbed with omitscript parameter
+        async function loadReelWithOEmbed(rawInput) {
+            try {
+                const normalizedUrl = normalizeInstagramUrl(rawInput);
+                const reelId = extractReelId(normalizedUrl);
+                
+                if (!reelId) {
+                    throw new Error('Invalid Instagram Reel URL.');
+                }
+                
+                input.value = normalizedUrl;
+                errorDiv.style.display = 'none';
+                errorDiv.textContent = '';
+                player.innerHTML = `<span class="loading">⏳ Loading Reel...</span>`;
+                
+                // Use omitscript=true to get just the HTML without script
+                const apiUrl = `https://graph.facebook.com/v25.0/instagram_oembed?url=${encodeURIComponent(normalizedUrl)}&omitscript=true`;
+                const response = await fetch(apiUrl);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load Reel. Make sure it\'s public and embedding is enabled.');
+                }
+                
+                const data = await response.json();
+                
+                // Insert the HTML
+                player.innerHTML = data.html;
+                
+                // Manually load the Instagram embed script
+                const script = document.createElement('script');
+                script.src = '//www.instagram.com/embed.js';
+                script.async = true;
+                script.defer = true;
+                document.head.appendChild(script);
+                
+                // Show share link
+                const shareUrl = buildShareLink(reelId);
+                shareInput.value = shareUrl;
+                shareSection.style.display = 'flex';
+                attribution.style.display = 'block';
+                
+                if (window.history && window.history.pushState) {
+                    window.history.pushState({ reelId }, '', `?reel=${reelId}`);
+                }
+                
+            } catch (err) {
+                errorDiv.textContent = err.message;
+                errorDiv.style.display = 'block';
+                player.innerHTML = `
+                    <div class="placeholder-icon">🎬</div>
+                    <span>Enter a valid Reel link to view it here</span>
+                `;
+                shareSection.style.display = 'none';
+                attribution.style.display = 'none';
+            }
+        }
+        
+        // --- Load from URL parameter ---
         function loadFromParams() {
             const params = new URLSearchParams(window.location.search);
             const reelParam = params.get('reel');
             if (reelParam) {
                 const fullUrl = `https://instagram.com/reel/${reelParam}/`;
                 input.value = fullUrl;
-                loadReel(fullUrl);
+                // Try the iframe method first (more reliable)
+                loadReelWithIframe(fullUrl);
             }
         }
         
@@ -379,14 +351,14 @@
         // --- Event Listeners ---
         loadBtn.addEventListener('click', () => {
             const url = input.value.trim();
-            if (url) loadReel(url);
+            if (url) loadReelWithIframe(url);
         });
         
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 const url = input.value.trim();
-                if (url) loadReel(url);
+                if (url) loadReelWithIframe(url);
             }
         });
         
