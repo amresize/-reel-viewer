@@ -129,9 +129,8 @@
             background: rgba(0, 149, 246, 0.1);
         }
         
-        /* --- Player Container --- */
         #player-container {
-            min-height: 200px;
+            min-height: 400px;
             background: #fafafa;
             border-radius: 12px;
             display: flex;
@@ -150,7 +149,6 @@
             opacity: 0.5;
         }
         
-        /* --- Instagram Embed Styling --- */
         #player-container .instagram-media {
             max-width: 100% !important;
             min-width: 100% !important;
@@ -158,7 +156,6 @@
             margin: 0 auto !important;
         }
         
-        /* This targets the Instagram embed's wrapper */
         #player-container iframe {
             max-width: 100% !important;
             border: none !important;
@@ -166,7 +163,6 @@
             background: white;
         }
         
-        /* Remove extra spacing Instagram adds */
         #player-container > blockquote {
             margin: 0 !important;
             max-width: 100% !important;
@@ -174,7 +170,6 @@
             width: 100% !important;
         }
         
-        /* Small note about Instagram attribution - this is required */
         .instagram-attribution {
             text-align: center;
             font-size: 11px;
@@ -231,7 +226,6 @@
             <span>Paste a link above to view the Reel</span>
         </div>
         
-        <!-- Attribution note - required by Instagram's terms -->
         <div class="instagram-attribution" id="attribution" style="display: none;">
             <span>Content from </span>
             <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
@@ -249,6 +243,7 @@
         const copyBtn = document.getElementById('copyButton');
         const attribution = document.getElementById('attribution');
         
+        // --- Helper Functions ---
         function normalizeInstagramUrl(input) {
             let url = input.trim();
             if (/^[A-Za-z0-9_-]+$/.test(url)) {
@@ -269,6 +264,7 @@
             return `${window.location.origin}${window.location.pathname}?reel=${reelId}`;
         }
         
+        // --- Load Reel with Proper Script Reload ---
         async function loadReel(rawInput) {
             try {
                 const normalizedUrl = normalizeInstagramUrl(rawInput);
@@ -284,6 +280,7 @@
                 
                 input.value = normalizedUrl;
                 
+                // Call Meta's tokenless oEmbed API
                 const apiUrl = `https://graph.facebook.com/v25.0/instagram_oembed?url=${encodeURIComponent(normalizedUrl)}`;
                 const response = await fetch(apiUrl);
                 
@@ -300,8 +297,32 @@
                 
                 const data = await response.json();
                 
-                // Insert the embed
+                // --- FIX: Properly reload Instagram's embed script ---
+                // Insert the embed HTML
                 player.innerHTML = data.html;
+                
+                // Remove any existing Instagram embed script
+                const existingScript = document.querySelector('script[src*="instagram.com/embed.js"]');
+                if (existingScript) {
+                    existingScript.remove();
+                }
+                
+                // Create and add a fresh script
+                const script = document.createElement('script');
+                script.src = '//www.instagram.com/embed.js';
+                script.async = true;
+                script.defer = true;
+                
+                script.onload = function() {
+                    console.log('Instagram embed script loaded successfully');
+                };
+                
+                script.onerror = function() {
+                    console.warn('Instagram embed script failed to load');
+                };
+                
+                document.head.appendChild(script);
+                // --- END OF FIX ---
                 
                 // Show Instagram attribution
                 attribution.style.display = 'block';
@@ -328,6 +349,7 @@
             }
         }
         
+        // --- Load from URL parameter on page load ---
         function loadFromParams() {
             const params = new URLSearchParams(window.location.search);
             const reelParam = params.get('reel');
@@ -338,6 +360,7 @@
             }
         }
         
+        // --- Copy to Clipboard ---
         async function copyShareLink() {
             try {
                 await navigator.clipboard.writeText(shareInput.value);
@@ -353,6 +376,7 @@
             }
         }
         
+        // --- Event Listeners ---
         loadBtn.addEventListener('click', () => {
             const url = input.value.trim();
             if (url) loadReel(url);
@@ -368,6 +392,8 @@
         
         copyBtn.addEventListener('click', copyShareLink);
         window.addEventListener('popstate', loadFromParams);
+        
+        // --- Load on startup ---
         loadFromParams();
     </script>
 </body>
