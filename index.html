@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,125 +6,129 @@
     <title>Reel Viewer</title>
     <style>
         /* --- Reset & Base --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
             background: #f5f5f5;
             display: flex;
             justify-content: center;
             padding: 40px 20px;
+            min-height: 100vh;
         }
-
-        /* --- App Container --- */
+        
         .container {
-            max-width: 600px;
+            max-width: 650px;
             width: 100%;
             background: white;
             border-radius: 16px;
             padding: 30px 24px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
-
+        
         h1 {
             font-size: 24px;
             font-weight: 700;
             margin-bottom: 8px;
             color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-
         .subtitle {
             color: #666;
             font-size: 14px;
             margin-bottom: 24px;
         }
-
-        /* --- Search Bar --- */
+        
         .search-box {
             display: flex;
             gap: 10px;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
         }
-
-            .search-box input {
-                flex: 1;
-                padding: 12px 16px;
-                border: 2px solid #ddd;
-                border-radius: 10px;
-                font-size: 15px;
-                outline: none;
-                transition: border-color 0.2s;
-            }
-
-                .search-box input:focus {
-                    border-color: #0095f6;
-                }
-
-                .search-box input::placeholder {
-                    color: #999;
-                }
-
-            .search-box button {
-                padding: 12px 24px;
-                background: #0095f6;
-                color: white;
-                border: none;
-                border-radius: 10px;
-                font-size: 15px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: background 0.2s;
-                white-space: nowrap;
-            }
-
-                .search-box button:hover {
-                    background: #0077cc;
-                }
-
-        /* --- Share URL Display --- */
+        .search-box input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+            background: #fafafa;
+        }
+        .search-box input:focus {
+            border-color: #0095f6;
+            background: white;
+        }
+        .search-box input::placeholder {
+            color: #999;
+        }
+        .search-box button {
+            padding: 12px 28px;
+            background: #0095f6;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        .search-box button:hover {
+            background: #0077cc;
+        }
+        
+        #error {
+            color: #d32f2f;
+            background: #ffebee;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+            font-size: 14px;
+        }
+        
         .share-section {
             background: #f0f0f0;
             border-radius: 10px;
-            padding: 12px 16px;
-            margin-bottom: 24px;
-            display: flex;
+            padding: 10px 14px;
+            margin-bottom: 20px;
+            display: none;
             align-items: center;
             gap: 10px;
+            flex-wrap: wrap;
         }
-
-            .share-section input {
-                flex: 1;
-                background: transparent;
-                border: none;
-                font-size: 13px;
-                color: #333;
-                outline: none;
-                padding: 4px 0;
-            }
-
-                .share-section input::selection {
-                    background: #0095f6;
-                    color: white;
-                }
-
-            .share-section button {
-                background: none;
-                border: none;
-                color: #0095f6;
-                font-weight: 600;
-                font-size: 13px;
-                cursor: pointer;
-                padding: 4px 8px;
-            }
-
-                .share-section button:hover {
-                    color: #0077cc;
-                }
-
+        .share-section .label {
+            font-size: 13px;
+            color: #666;
+            font-weight: 500;
+        }
+        .share-section input {
+            flex: 1;
+            min-width: 150px;
+            background: transparent;
+            border: none;
+            font-size: 13px;
+            color: #333;
+            outline: none;
+            padding: 4px 0;
+            font-family: monospace;
+        }
+        .share-section button {
+            background: none;
+            border: none;
+            color: #0095f6;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 4px 10px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        .share-section button:hover {
+            background: rgba(0, 149, 246, 0.1);
+        }
+        
         /* --- Player Container --- */
         #player-container {
             min-height: 200px;
@@ -136,44 +140,71 @@
             justify-content: center;
             color: #999;
             font-size: 14px;
-            padding: 20px;
+            padding: 30px 20px;
             overflow: hidden;
+            border: 1px dashed #ddd;
         }
-
-            #player-container iframe {
-                max-width: 100%;
-                border: none;
-                border-radius: 8px;
-            }
-
-        /* --- Error Message --- */
-        .error {
-            color: #d32f2f;
-            background: #ffebee;
-            padding: 12px 16px;
+        #player-container .placeholder-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+        
+        /* --- Instagram Embed Styling --- */
+        #player-container .instagram-media {
+            max-width: 100% !important;
+            min-width: 100% !important;
+            width: 100% !important;
+            margin: 0 auto !important;
+        }
+        
+        /* This targets the Instagram embed's wrapper */
+        #player-container iframe {
+            max-width: 100% !important;
+            border: none !important;
             border-radius: 8px;
-            margin-bottom: 16px;
-            display: none;
+            background: white;
         }
-
-        /* --- Loading --- */
+        
+        /* Remove extra spacing Instagram adds */
+        #player-container > blockquote {
+            margin: 0 !important;
+            max-width: 100% !important;
+            min-width: 100% !important;
+            width: 100% !important;
+        }
+        
+        /* Small note about Instagram attribution - this is required */
+        .instagram-attribution {
+            text-align: center;
+            font-size: 11px;
+            color: #999;
+            margin-top: 8px;
+            padding: 4px 0;
+        }
+        .instagram-attribution a {
+            color: #0095f6;
+            text-decoration: none;
+        }
+        .instagram-attribution a:hover {
+            text-decoration: underline;
+        }
+        
         .loading {
             color: #0095f6;
+            animation: pulse 1.2s ease-in-out infinite;
         }
-
-        /* --- Responsive --- */
-        @media (max-width: 480px) {
-            .container {
-                padding: 20px 16px;
-            }
-
-            .search-box {
-                flex-direction: column;
-            }
-
-                .search-box button {
-                    width: 100%;
-                }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        
+        @media (max-width: 500px) {
+            .container { padding: 20px 16px; }
+            .search-box { flex-direction: column; }
+            .search-box button { width: 100%; justify-content: center; }
+            .share-section { flex-direction: column; align-items: stretch; }
+            .share-section input { min-width: auto; }
         }
     </style>
 </head>
@@ -181,30 +212,34 @@
     <div class="container">
         <h1>📱 Reel Viewer</h1>
         <p class="subtitle">Paste any public Instagram Reel link to watch it here</p>
-
-        <!-- Error Display -->
-        <div id="error" class="error"></div>
-
-        <!-- Search Bar -->
+        
+        <div id="error"></div>
+        
         <div class="search-box">
-            <input type="text" id="reelInput" placeholder="https://instagram.com/reel/..." />
+            <input type="text" id="reelInput" placeholder="https://instagram.com/reel/..." spellcheck="false" />
             <button id="loadButton">▶ Load Reel</button>
         </div>
-
-        <!-- Shareable Link -->
-        <div class="share-section" id="shareSection" style="display: none;">
-            <span style="font-size:13px; color:#666;">🔗 Share this link:</span>
+        
+        <div class="share-section" id="shareSection">
+            <span class="label">🔗 Share this link:</span>
             <input type="text" id="shareInput" readonly />
-            <button id="copyButton">Copy</button>
+            <button id="copyButton">📋 Copy</button>
         </div>
-
-        <!-- Player -->
+        
         <div id="player-container">
+            <div class="placeholder-icon">🎬</div>
             <span>Paste a link above to view the Reel</span>
+        </div>
+        
+        <!-- Attribution note - required by Instagram's terms -->
+        <div class="instagram-attribution" id="attribution" style="display: none;">
+            <span>Content from </span>
+            <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
         </div>
     </div>
 
-    <script>// --- DOM Elements ---
+    <script>
+        // --- DOM Elements ---
         const input = document.getElementById('reelInput');
         const loadBtn = document.getElementById('loadButton');
         const player = document.getElementById('player-container');
@@ -212,111 +247,128 @@
         const shareSection = document.getElementById('shareSection');
         const shareInput = document.getElementById('shareInput');
         const copyBtn = document.getElementById('copyButton');
-
-        // --- Extract Instagram Reel ID from URL ---
+        const attribution = document.getElementById('attribution');
+        
+        function normalizeInstagramUrl(input) {
+            let url = input.trim();
+            if (/^[A-Za-z0-9_-]+$/.test(url)) {
+                return `https://instagram.com/reel/${url}/`;
+            }
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+            return url;
+        }
+        
         function extractReelId(url) {
             const match = url.match(/instagram\.com\/reel\/([A-Za-z0-9_-]+)/);
             return match ? match[1] : null;
         }
-
-        // --- Build Shareable Link ---
+        
         function buildShareLink(reelId) {
-            // Use your actual domain here
-            return `${window.location.origin}/?reel=${reelId}`;
+            return `${window.location.origin}${window.location.pathname}?reel=${reelId}`;
         }
-
-        // --- Load Reel from URL (Tokenless oEmbed) ---
-        async function loadReel(url) {
+        
+        async function loadReel(rawInput) {
             try {
-                // Show loading
+                const normalizedUrl = normalizeInstagramUrl(rawInput);
                 player.innerHTML = `<span class="loading">⏳ Loading Reel...</span>`;
                 errorDiv.style.display = 'none';
-
-                // Validate URL
-                const reelId = extractReelId(url);
+                errorDiv.textContent = '';
+                attribution.style.display = 'none';
+                
+                const reelId = extractReelId(normalizedUrl);
                 if (!reelId) {
                     throw new Error('Invalid Instagram Reel URL. Please paste a link like: https://instagram.com/reel/...');
                 }
-
-                // Call Meta's tokenless oEmbed API
-                const apiUrl = `https://graph.facebook.com/v25.0/instagram_oembed?url=${encodeURIComponent(url)}`;
+                
+                input.value = normalizedUrl;
+                
+                const apiUrl = `https://graph.facebook.com/v25.0/instagram_oembed?url=${encodeURIComponent(normalizedUrl)}`;
                 const response = await fetch(apiUrl);
-
+                
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error?.message || 'Failed to load Reel. Make sure it\'s public and embedding is enabled.');
+                    let errorMsg = 'Failed to load Reel. ';
+                    try {
+                        const errorData = await response.json();
+                        errorMsg += errorData.error?.message || 'Make sure it\'s public and embedding is enabled.';
+                    } catch {
+                        errorMsg += 'Make sure it\'s public and embedding is enabled.';
+                    }
+                    throw new Error(errorMsg);
                 }
-
+                
                 const data = await response.json();
-
-                // Render the embed
+                
+                // Insert the embed
                 player.innerHTML = data.html;
-
-                // Show shareable link
+                
+                // Show Instagram attribution
+                attribution.style.display = 'block';
+                
+                // Show share link
                 const shareUrl = buildShareLink(reelId);
                 shareInput.value = shareUrl;
                 shareSection.style.display = 'flex';
-
-                // Update URL without reloading (optional)
+                
                 if (window.history && window.history.pushState) {
-                    window.history.pushState({}, '', `/?reel=${reelId}`);
+                    const newUrl = `${window.location.pathname}?reel=${reelId}`;
+                    window.history.pushState({ reelId }, '', newUrl);
                 }
-
+                
             } catch (err) {
                 errorDiv.textContent = err.message || 'Something went wrong. Please try again.';
                 errorDiv.style.display = 'block';
-                player.innerHTML = `<span style="color:#999;">Enter a valid Reel link to view it here</span>`;
+                player.innerHTML = `
+                    <div class="placeholder-icon">🎬</div>
+                    <span>Enter a valid Reel link to view it here</span>
+                `;
                 shareSection.style.display = 'none';
+                attribution.style.display = 'none';
             }
         }
-
-        // --- Load from URL parameter on page load ---
+        
         function loadFromParams() {
             const params = new URLSearchParams(window.location.search);
             const reelParam = params.get('reel');
             if (reelParam) {
-                // Try to construct full URL from just the ID
-                const fullUrl = `https://instagram.com/reel/${reelParam}`;
+                const fullUrl = `https://instagram.com/reel/${reelParam}/`;
                 input.value = fullUrl;
                 loadReel(fullUrl);
             }
         }
-
-        // --- Copy to Clipboard ---
-        function copyShareLink() {
-            shareInput.select();
+        
+        async function copyShareLink() {
             try {
-                navigator.clipboard.writeText(shareInput.value);
-                copyBtn.textContent = 'Copied!';
-                setTimeout(() => { copyBtn.textContent = 'Copy'; }, 2000);
+                await navigator.clipboard.writeText(shareInput.value);
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '✅ Copied!';
+                setTimeout(() => { copyBtn.textContent = originalText; }, 2000);
             } catch {
+                shareInput.select();
                 document.execCommand('copy');
-                copyBtn.textContent = 'Copied!';
-                setTimeout(() => { copyBtn.textContent = 'Copy'; }, 2000);
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '✅ Copied!';
+                setTimeout(() => { copyBtn.textContent = originalText; }, 2000);
             }
         }
-
-        // --- Event Listeners ---
+        
         loadBtn.addEventListener('click', () => {
             const url = input.value.trim();
             if (url) loadReel(url);
         });
-
+        
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
+                e.preventDefault();
                 const url = input.value.trim();
                 if (url) loadReel(url);
             }
         });
-
+        
         copyBtn.addEventListener('click', copyShareLink);
-
-        // --- Handle browser back/forward ---
-        window.addEventListener('popstate', () => {
-            loadFromParams();
-        });
-
-        // --- Load on startup ---
-        loadFromParams();</script>
+        window.addEventListener('popstate', loadFromParams);
+        loadFromParams();
+    </script>
 </body>
 </html>
