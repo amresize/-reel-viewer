@@ -1,182 +1,536 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reel Viewer</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>✨ Reel Viewer</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* --- CSS Variables for Neon Theme --- */
+        :root {
+            --neon-cyan: #00f0ff;
+            --neon-pink: #ff00e6;
+            --neon-purple: #b300ff;
+            --neon-blue: #0066ff;
+            --bg-dark: #0a0a12;
+            --bg-card: rgba(15, 15, 30, 0.85);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --glow-cyan: 0 0 15px rgba(0, 240, 255, 0.3);
+            --glow-pink: 0 0 15px rgba(255, 0, 230, 0.3);
+            --border-glow: 0 0 20px rgba(0, 240, 255, 0.15);
+            --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        /* --- Reset & Base --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            background: #f5f5f5;
+            font-family: var(--font-main);
+            background: var(--bg-dark);
+            background-image:
+                radial-gradient(ellipse at 20% 50%, rgba(0, 240, 255, 0.05) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 50%, rgba(255, 0, 230, 0.05) 0%, transparent 60%);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
-            padding: 40px 20px;
-            min-height: 100vh;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-primary);
         }
-        
+
+        /* --- Animated Background --- */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(0, 240, 255, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 0, 230, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* --- Main Container --- */
         .container {
-            max-width: 650px;
+            position: relative;
+            max-width: 680px;
             width: 100%;
-            background: white;
-            border-radius: 16px;
-            padding: 30px 24px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 32px 28px;
+            border: 1px solid rgba(0, 240, 255, 0.12);
+            box-shadow:
+                var(--border-glow),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            z-index: 1;
+            animation: fadeIn 0.6s ease-out;
         }
-        
-        h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; color: #1a1a1a; }
-        .subtitle { color: #666; font-size: 14px; margin-bottom: 24px; }
-        
+
+        /* --- Neon Border Glow Animation --- */
+        .container::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 26px;
+            padding: 2px;
+            background: conic-gradient(from 0deg,
+                    transparent,
+                    var(--neon-cyan),
+                    var(--neon-pink),
+                    var(--neon-purple),
+                    var(--neon-cyan),
+                    transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.4;
+            animation: rotateBorder 8s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rotateBorder {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Header --- */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 6px;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+            filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.3));
+            animation: pulseIcon 3s ease-in-out infinite;
+        }
+
+        @keyframes pulseIcon {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.3)); }
+            50% { filter: drop-shadow(0 0 25px rgba(255, 0, 230, 0.4)); }
+        }
+
+        h1 {
+            font-size: clamp(22px, 5vw, 28px);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: clamp(13px, 2.5vw, 15px);
+            margin-bottom: 24px;
+            padding-left: 4px;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
+
+        .subtitle span {
+            color: var(--neon-cyan);
+            -webkit-text-fill-color: var(--neon-cyan);
+        }
+
+        /* --- Search Bar --- */
         .search-box {
             display: flex;
-            gap: 10px;
-            margin-bottom: 16px;
+            gap: 12px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
         }
+
         .search-box input {
             flex: 1;
-            padding: 12px 16px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 15px;
+            min-width: 180px;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+            border-radius: 14px;
+            font-size: clamp(14px, 2.5vw, 16px);
+            color: var(--text-primary);
             outline: none;
-            background: #fafafa;
+            transition: all 0.3s ease;
+            font-family: var(--font-main);
+            backdrop-filter: blur(10px);
         }
-        .search-box input:focus { border-color: #0095f6; background: white; }
+
+        .search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 300;
+        }
+
+        .search-box input:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.1), inset 0 0 25px rgba(0, 240, 255, 0.03);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
         .search-box button {
-            padding: 12px 28px;
-            background: #0095f6;
-            color: white;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue));
+            color: #fff;
             border: none;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
+            border-radius: 14px;
+            font-size: clamp(14px, 2.5vw, 16px);
+            font-weight: 700;
             cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.15);
+            position: relative;
+            overflow: hidden;
         }
-        .search-box button:hover { background: #0077cc; }
-        
+
+        .search-box button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            border-radius: 14px;
+        }
+
+        .search-box button:hover::before {
+            opacity: 1;
+        }
+
+        .search-box button:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 0 50px rgba(0, 240, 255, 0.25);
+        }
+
+        .search-box button:active {
+            transform: scale(0.97);
+        }
+
+        .search-box button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- Error Message --- */
         #error {
-            color: #d32f2f;
-            background: #ffebee;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 16px;
+            color: #ff4466;
+            background: rgba(255, 68, 102, 0.08);
+            border: 1px solid rgba(255, 68, 102, 0.2);
+            padding: 12px 18px;
+            border-radius: 12px;
+            margin-bottom: 18px;
             display: none;
             font-size: 14px;
+            backdrop-filter: blur(10px);
         }
-        
+
+        /* --- Share Section --- */
         .share-section {
-            background: #f0f0f0;
-            border-radius: 10px;
-            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 240, 255, 0.08);
+            border-radius: 14px;
+            padding: 12px 16px;
             margin-bottom: 20px;
             display: none;
             align-items: center;
             gap: 10px;
             flex-wrap: wrap;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
         }
+
+        .share-section:hover {
+            border-color: rgba(0, 240, 255, 0.2);
+        }
+
+        .share-section .label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
         .share-section input {
             flex: 1;
-            min-width: 150px;
+            min-width: 140px;
             background: transparent;
             border: none;
             font-size: 13px;
-            color: #333;
+            color: var(--text-primary);
             outline: none;
-            font-family: monospace;
+            padding: 4px 0;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            letter-spacing: 0.2px;
         }
+
+        .share-section input::selection {
+            background: rgba(0, 240, 255, 0.2);
+            color: #fff;
+        }
+
         .share-section button {
             background: none;
             border: none;
-            color: #0095f6;
+            color: var(--neon-cyan);
             font-weight: 600;
             font-size: 13px;
             cursor: pointer;
+            padding: 6px 14px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
         }
-        
+
+        .share-section button:hover {
+            background: rgba(0, 240, 255, 0.08);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.05);
+        }
+
+        /* --- Player Container --- */
         #player-container {
-            min-height: 400px;
-            background: #fafafa;
-            border-radius: 12px;
+            min-height: 420px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #999;
+            color: rgba(255, 255, 255, 0.3);
             font-size: 14px;
             padding: 30px 20px;
-            border: 1px dashed #ddd;
+            overflow: hidden;
+            border: 1px solid rgba(0, 240, 255, 0.06);
+            position: relative;
+            transition: all 0.4s ease;
         }
-        #player-container .placeholder-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
-        
-        .loading { color: #0095f6; animation: pulse 1.2s ease-in-out infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        
-        /* Instagram embed styling */
-        #player-container .instagram-media {
-            max-width: 100% !important;
-            min-width: 100% !important;
-            width: 100% !important;
-            margin: 0 auto !important;
+
+        #player-container .placeholder-icon {
+            font-size: 56px;
+            margin-bottom: 14px;
+            opacity: 0.4;
+            filter: drop-shadow(0 0 30px rgba(0, 240, 255, 0.05));
         }
+
         #player-container iframe {
-            max-width: 100% !important;
+            max-width: 100%;
             border: none !important;
-            border-radius: 8px;
+            border-radius: 12px;
+            background: transparent;
+            min-height: 450px;
+            width: 100%;
         }
-        #player-container > blockquote {
-            margin: 0 !important;
-            max-width: 100% !important;
-            min-width: 100% !important;
-            width: 100% !important;
+
+        /* --- Loading State --- */
+        .loading {
+            color: var(--neon-cyan);
+            animation: pulseText 1.4s ease-in-out infinite;
+            font-weight: 500;
+            letter-spacing: 0.5px;
         }
-        
+
+        @keyframes pulseText {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* --- Instagram Attribution --- */
         .instagram-attribution {
             text-align: center;
             font-size: 11px;
-            color: #999;
-            margin-top: 8px;
-            padding: 4px 0;
+            color: rgba(255, 255, 255, 0.25);
+            margin-top: 12px;
+            padding: 6px 0;
+            letter-spacing: 0.5px;
         }
-        .instagram-attribution a { color: #0095f6; text-decoration: none; }
-        
-        @media (max-width: 500px) {
-            .container { padding: 20px 16px; }
-            .search-box { flex-direction: column; }
-            .search-box button { width: 100%; }
-            .share-section { flex-direction: column; align-items: stretch; }
+
+        .instagram-attribution a {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .instagram-attribution a:hover {
+            color: var(--neon-pink);
+        }
+
+        /* --- Scrollbar Styling --- */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--neon-cyan);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px 16px;
+                border-radius: 20px;
+            }
+
+            .search-box {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .search-box input {
+                min-width: auto;
+                padding: 16px 18px;
+                font-size: 16px; /* Prevents iOS zoom */
+            }
+
+            .search-box button {
+                width: 100%;
+                justify-content: center;
+                padding: 16px;
+                font-size: 15px;
+            }
+
+            .share-section {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+                padding: 14px 16px;
+            }
+
+            .share-section input {
+                min-width: auto;
+                font-size: 12px;
+                padding: 6px 0;
+            }
+
+            #player-container {
+                min-height: 340px;
+                padding: 20px 12px;
+                border-radius: 12px;
+            }
+
+            #player-container iframe {
+                min-height: 380px;
+            }
+
+            .header {
+                gap: 8px;
+            }
+
+            .logo-icon {
+                font-size: 22px;
+            }
+
+            .container::before {
+                border-radius: 22px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .container {
+                padding: 16px 12px;
+            }
+
+            #player-container iframe {
+                min-height: 320px;
+            }
+
+            #player-container {
+                min-height: 280px;
+            }
+
+            .search-box input {
+                padding: 14px 14px;
+                font-size: 15px;
+            }
+        }
+
+        /* --- Safe area for notched phones --- */
+        @supports (padding: max(0px)) {
+            .container {
+                padding-left: max(28px, env(safe-area-inset-left));
+                padding-right: max(28px, env(safe-area-inset-right));
+            }
+        }
+
+        /* --- Dark mode tweaks for Instagram embed --- */
+        #player-container .instagram-media {
+            background: transparent !important;
         }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <h1>📱 Reel Viewer</h1>
-        <p class="subtitle">Paste any public Instagram Reel link to watch it here</p>
-        
-        <div id="error"></div>
-        
-        <div class="search-box">
-            <input type="text" id="reelInput" placeholder="https://instagram.com/reel/..." spellcheck="false" />
-            <button id="loadButton">▶ Load Reel</button>
+        <!-- Header -->
+        <div class="header">
+            <span class="logo-icon">✦</span>
+            <h1>Reel Viewer</h1>
         </div>
-        
+        <p class="subtitle">
+            Paste any <span>public</span> Instagram Reel link to watch it here
+        </p>
+
+        <!-- Error Display -->
+        <div id="error"></div>
+
+        <!-- Search Bar -->
+        <div class="search-box">
+            <input
+            type="text"
+            id="reelInput"
+            placeholder="https://instagram.com/reel/..."
+            spellcheck="false"
+            autocomplete="off"
+            />
+            <button id="loadButton"><span>▶ Load Reel</span></button>
+        </div>
+
+        <!-- Shareable Link -->
         <div class="share-section" id="shareSection">
-            <span class="label">🔗 Share this link:</span>
+            <span class="label">🔗 Share</span>
             <input type="text" id="shareInput" readonly />
             <button id="copyButton">📋 Copy</button>
         </div>
-        
+
+        <!-- Player -->
         <div id="player-container">
             <div class="placeholder-icon">🎬</div>
             <span>Paste a link above to view the Reel</span>
         </div>
-        
+
+        <!-- Attribution -->
         <div class="instagram-attribution" id="attribution" style="display: none;">
-            <span>Content from </span>
-            <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
+            Content from <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
         </div>
     </div>
 
     <script>
+        // --- DOM Elements ---
         const input = document.getElementById('reelInput');
         const loadBtn = document.getElementById('loadButton');
         const player = document.getElementById('player-container');
@@ -185,7 +539,8 @@
         const shareInput = document.getElementById('shareInput');
         const copyBtn = document.getElementById('copyButton');
         const attribution = document.getElementById('attribution');
-        
+
+        // --- Helper Functions ---
         function normalizeInstagramUrl(input) {
             let url = input.trim();
             if (/^[A-Za-z0-9_-]+$/.test(url)) {
@@ -196,37 +551,38 @@
             }
             return url;
         }
-        
+
         function extractReelId(url) {
             const match = url.match(/instagram\.com\/reel\/([A-Za-z0-9_-]+)/);
             return match ? match[1] : null;
         }
-        
+
         function buildShareLink(reelId) {
             return `${window.location.origin}${window.location.pathname}?reel=${reelId}`;
         }
-        
-        // --- THE FIX: Use a different approach ---
+
+        // --- Load Reel with Iframe ---
         function loadReelWithIframe(rawInput) {
             try {
                 const normalizedUrl = normalizeInstagramUrl(rawInput);
                 const reelId = extractReelId(normalizedUrl);
-                
+
                 if (!reelId) {
-                    throw new Error('Invalid Instagram Reel URL.');
+                    throw new Error('Invalid Instagram Reel URL. Please paste a link like: https://instagram.com/reel/...');
                 }
-                
+
                 input.value = normalizedUrl;
                 errorDiv.style.display = 'none';
                 errorDiv.textContent = '';
-                
+                attribution.style.display = 'none';
+
                 // Show loading
                 player.innerHTML = `<span class="loading">⏳ Loading Reel...</span>`;
-                
-                // Build the embed URL - this is a different approach
+
+                // Build the embed URL
                 const embedUrl = `https://www.instagram.com/reel/${reelId}/embed`;
-                
-                // Create an iframe directly
+
+                // Create iframe
                 const iframe = document.createElement('iframe');
                 iframe.src = embedUrl;
                 iframe.width = '100%';
@@ -234,25 +590,27 @@
                 iframe.frameBorder = '0';
                 iframe.scrolling = 'no';
                 iframe.allowFullscreen = true;
-                iframe.style.borderRadius = '8px';
-                iframe.style.backgroundColor = 'white';
-                
-                // Clear and add the iframe
+                iframe.style.borderRadius = '12px';
+                iframe.style.backgroundColor = 'transparent';
+                iframe.style.minHeight = '450px';
+                iframe.loading = 'lazy';
+
+                // Clear and add iframe
                 player.innerHTML = '';
                 player.appendChild(iframe);
-                
+
                 // Show share link
                 const shareUrl = buildShareLink(reelId);
                 shareInput.value = shareUrl;
                 shareSection.style.display = 'flex';
                 attribution.style.display = 'block';
-                
+
                 if (window.history && window.history.pushState) {
                     window.history.pushState({ reelId }, '', `?reel=${reelId}`);
                 }
-                
+
             } catch (err) {
-                errorDiv.textContent = err.message;
+                errorDiv.textContent = err.message || 'Something went wrong. Please try again.';
                 errorDiv.style.display = 'block';
                 player.innerHTML = `
                     <div class="placeholder-icon">🎬</div>
@@ -262,64 +620,7 @@
                 attribution.style.display = 'none';
             }
         }
-        
-        // Alternative: Use oEmbed with omitscript parameter
-        async function loadReelWithOEmbed(rawInput) {
-            try {
-                const normalizedUrl = normalizeInstagramUrl(rawInput);
-                const reelId = extractReelId(normalizedUrl);
-                
-                if (!reelId) {
-                    throw new Error('Invalid Instagram Reel URL.');
-                }
-                
-                input.value = normalizedUrl;
-                errorDiv.style.display = 'none';
-                errorDiv.textContent = '';
-                player.innerHTML = `<span class="loading">⏳ Loading Reel...</span>`;
-                
-                // Use omitscript=true to get just the HTML without script
-                const apiUrl = `https://graph.facebook.com/v25.0/instagram_oembed?url=${encodeURIComponent(normalizedUrl)}&omitscript=true`;
-                const response = await fetch(apiUrl);
-                
-                if (!response.ok) {
-                    throw new Error('Failed to load Reel. Make sure it\'s public and embedding is enabled.');
-                }
-                
-                const data = await response.json();
-                
-                // Insert the HTML
-                player.innerHTML = data.html;
-                
-                // Manually load the Instagram embed script
-                const script = document.createElement('script');
-                script.src = '//www.instagram.com/embed.js';
-                script.async = true;
-                script.defer = true;
-                document.head.appendChild(script);
-                
-                // Show share link
-                const shareUrl = buildShareLink(reelId);
-                shareInput.value = shareUrl;
-                shareSection.style.display = 'flex';
-                attribution.style.display = 'block';
-                
-                if (window.history && window.history.pushState) {
-                    window.history.pushState({ reelId }, '', `?reel=${reelId}`);
-                }
-                
-            } catch (err) {
-                errorDiv.textContent = err.message;
-                errorDiv.style.display = 'block';
-                player.innerHTML = `
-                    <div class="placeholder-icon">🎬</div>
-                    <span>Enter a valid Reel link to view it here</span>
-                `;
-                shareSection.style.display = 'none';
-                attribution.style.display = 'none';
-            }
-        }
-        
+
         // --- Load from URL parameter ---
         function loadFromParams() {
             const params = new URLSearchParams(window.location.search);
@@ -327,11 +628,10 @@
             if (reelParam) {
                 const fullUrl = `https://instagram.com/reel/${reelParam}/`;
                 input.value = fullUrl;
-                // Try the iframe method first (more reliable)
                 loadReelWithIframe(fullUrl);
             }
         }
-        
+
         // --- Copy to Clipboard ---
         async function copyShareLink() {
             try {
@@ -347,13 +647,13 @@
                 setTimeout(() => { copyBtn.textContent = originalText; }, 2000);
             }
         }
-        
+
         // --- Event Listeners ---
         loadBtn.addEventListener('click', () => {
             const url = input.value.trim();
             if (url) loadReelWithIframe(url);
         });
-        
+
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -361,12 +661,13 @@
                 if (url) loadReelWithIframe(url);
             }
         });
-        
+
         copyBtn.addEventListener('click', copyShareLink);
         window.addEventListener('popstate', loadFromParams);
-        
+
         // --- Load on startup ---
         loadFromParams();
     </script>
+
 </body>
 </html>
