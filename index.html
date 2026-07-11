@@ -5,28 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
     
     <!-- ═══════════════════════════════════════════════════ -->
-    <!-- DYNAMIC OPEN GRAPH TAGS - Updated by JavaScript   -->
+    <!-- OPEN GRAPH TAGS (Updated via JavaScript)          -->
     <!-- ═══════════════════════════════════════════════════ -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://igshare.am-ip.hu/" />
-    <meta property="og:title" id="og-title" content="✨ Reel Viewer" />
-    <meta property="og:description" id="og-description" content="Watch Instagram Reels instantly - no app needed!" />
-    <meta property="og:image" id="og-image" content="https://igshare.am-ip.hu/default-og.jpg" />
+    <meta property="og:title" content="✨ Reel Viewer" />
+    <meta property="og:description" content="Watch Instagram Reels instantly - no app needed!" />
+    <meta property="og:image" content="https://igshare.am-ip.hu/default-og.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content="Reel Viewer" />
     
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" id="twitter-title" content="✨ Reel Viewer" />
-    <meta name="twitter:description" id="twitter-description" content="Watch Instagram Reels instantly - no app needed!" />
-    <meta name="twitter:image" id="twitter-image" content="https://igshare.am-ip.hu/default-og.jpg" />
+    <meta name="twitter:title" content="✨ Reel Viewer" />
+    <meta name="twitter:description" content="Watch Instagram Reels instantly - no app needed!" />
+    <meta name="twitter:image" content="https://igshare.am-ip.hu/default-og.jpg" />
     
     <title>✨ Reel Viewer</title>
     
     <style>
-        /* --- Copy ALL your existing styles here --- */
-        /* (Keep your neon theme styles exactly as they are) */
         :root {
             --neon-cyan: #00f0ff;
             --neon-pink: #ff00e6;
@@ -36,14 +33,11 @@
             --bg-card: rgba(15, 15, 30, 0.85);
             --text-primary: #ffffff;
             --text-secondary: rgba(255, 255, 255, 0.6);
-            --glow-cyan: 0 0 15px rgba(0, 240, 255, 0.3);
-            --glow-pink: 0 0 15px rgba(255, 0, 230, 0.3);
             --border-glow: 0 0 20px rgba(0, 240, 255, 0.15);
             --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
 
         body {
             font-family: var(--font-main);
@@ -57,20 +51,6 @@
             align-items: center;
             padding: 20px;
             color: var(--text-primary);
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background:
-                radial-gradient(circle at 20% 30%, rgba(0, 240, 255, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(255, 0, 230, 0.03) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
         }
 
         .container {
@@ -371,18 +351,6 @@
             color: var(--neon-pink);
         }
 
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.02);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--neon-cyan);
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
-        }
-
         @media (max-width: 600px) {
             .container {
                 padding: 20px 16px;
@@ -422,49 +390,12 @@
             #player-container iframe {
                 min-height: 380px;
             }
-            .header {
-                gap: 8px;
-            }
-            .logo-icon {
-                font-size: 22px;
-            }
-            .container::before {
-                border-radius: 22px;
-            }
-        }
-
-        @media (max-width: 400px) {
-            .container {
-                padding: 16px 12px;
-            }
-            #player-container iframe {
-                min-height: 320px;
-            }
-            #player-container {
-                min-height: 280px;
-            }
-            .search-box input {
-                padding: 14px 14px;
-                font-size: 15px;
-            }
-        }
-
-        @supports (padding: max(0px)) {
-            .container {
-                padding-left: max(28px, env(safe-area-inset-left));
-                padding-right: max(28px, env(safe-area-inset-right));
-            }
-        }
-
-        #player-container .instagram-media {
-            background: transparent !important;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- Header -->
         <div class="header">
             <span class="logo-icon">✦</span>
             <h1>Reel Viewer</h1>
@@ -473,10 +404,8 @@
             Paste any <span>public</span> Instagram Reel link to watch it here
         </p>
 
-        <!-- Error Display -->
         <div id="error"></div>
 
-        <!-- Search Bar -->
         <div class="search-box">
             <input
             type="text"
@@ -488,20 +417,17 @@
             <button id="loadButton"><span>▶ Load Reel</span></button>
         </div>
 
-        <!-- Shareable Link -->
         <div class="share-section" id="shareSection">
             <span class="label">🔗 Share</span>
             <input type="text" id="shareInput" readonly />
             <button id="copyButton">📋 Copy</button>
         </div>
 
-        <!-- Player -->
         <div id="player-container">
             <div class="placeholder-icon">🎬</div>
             <span>Paste a link above to view the Reel</span>
         </div>
 
-        <!-- Attribution -->
         <div class="instagram-attribution" id="attribution" style="display: none;">
             Content from <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
         </div>
@@ -542,21 +468,25 @@
             return `${window.location.origin}${window.location.pathname}?reel=${reelId}`;
         }
 
-        // --- Update OG Tags for Social Sharing ---
-        function updateOGTags(reelId, thumbnailUrl, caption) {
+        // --- Update OG Tags (simple version) ---
+        function updateOGTags(reelId, thumbnailUrl) {
             const baseUrl = 'https://igshare.am-ip.hu';
             const shareUrl = `${baseUrl}?reel=${reelId}`;
             
-            // Update OG tags
-            document.getElementById('og-title').content = `📱 Instagram Reel`;
-            document.getElementById('og-description').content = caption || 'Watch this Instagram Reel instantly!';
-            document.getElementById('og-image').content = thumbnailUrl || `${baseUrl}/default-og.jpg`;
-            document.getElementById('og-url').content = shareUrl;
+            // Update OG tags using querySelector
+            const ogImage = document.querySelector('meta[property="og:image"]');
+            const ogUrl = document.querySelector('meta[property="og:url"]');
+            const twitterImage = document.querySelector('meta[name="twitter:image"]');
             
-            // Update Twitter tags
-            document.getElementById('twitter-title').content = `📱 Instagram Reel`;
-            document.getElementById('twitter-description').content = caption || 'Watch this Instagram Reel instantly!';
-            document.getElementById('twitter-image').content = thumbnailUrl || `${baseUrl}/default-og.jpg`;
+            if (ogImage && thumbnailUrl) {
+                ogImage.setAttribute('content', thumbnailUrl);
+            }
+            if (ogUrl) {
+                ogUrl.setAttribute('content', shareUrl);
+            }
+            if (twitterImage && thumbnailUrl) {
+                twitterImage.setAttribute('content', thumbnailUrl);
+            }
         }
 
         // --- Fetch Thumbnail from Instagram ---
@@ -566,40 +496,21 @@
                 const response = await fetch(apiUrl);
                 
                 if (!response.ok) {
-                    throw new Error('Failed to fetch Reel data');
+                    return null;
                 }
                 
                 const data = await response.json();
                 
-                // Extract thumbnail URL from the HTML
-                let thumbnailUrl = null;
-                let caption = null;
-                
                 if (data.html) {
-                    // Try to find thumbnail in the HTML
                     const imgMatch = data.html.match(/https:\/\/[^\s"']+\.(jpg|jpeg|png|webp)/i);
                     if (imgMatch) {
-                        thumbnailUrl = imgMatch[0];
-                    }
-                    
-                    // Try to find caption
-                    const captionMatch = data.html.match(/<a[^>]*>([^<]*)<\/a>/);
-                    if (captionMatch && captionMatch[1].length > 5) {
-                        caption = captionMatch[1].trim();
+                        return imgMatch[0];
                     }
                 }
-                
-                return {
-                    thumbnailUrl: thumbnailUrl || null,
-                    caption: caption || 'Watch this Instagram Reel instantly!'
-                };
-                
+                return null;
             } catch (error) {
                 console.error('Error fetching thumbnail:', error);
-                return {
-                    thumbnailUrl: null,
-                    caption: 'Watch this Instagram Reel instantly!'
-                };
+                return null;
             }
         }
 
@@ -618,17 +529,16 @@
                 errorDiv.textContent = '';
                 attribution.style.display = 'none';
 
-                // Show loading
                 player.innerHTML = `<span class="loading">⏳ Loading Reel...</span>`;
 
-                // --- Fetch thumbnail for OG tags ---
-                const { thumbnailUrl, caption } = await fetchReelThumbnail(reelId);
-                updateOGTags(reelId, thumbnailUrl, caption);
+                // Fetch thumbnail for OG tags
+                const thumbnailUrl = await fetchReelThumbnail(reelId);
+                if (thumbnailUrl) {
+                    updateOGTags(reelId, thumbnailUrl);
+                }
 
-                // Build the embed URL
                 const embedUrl = `https://www.instagram.com/reel/${reelId}/embed`;
 
-                // Create iframe
                 const iframe = document.createElement('iframe');
                 iframe.src = embedUrl;
                 iframe.width = '100%';
@@ -641,11 +551,9 @@
                 iframe.style.minHeight = '450px';
                 iframe.loading = 'lazy';
 
-                // Clear and add iframe
                 player.innerHTML = '';
                 player.appendChild(iframe);
 
-                // Show share link
                 const shareUrl = buildShareLink(reelId);
                 shareInput.value = shareUrl;
                 shareSection.style.display = 'flex';
