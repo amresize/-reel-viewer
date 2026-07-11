@@ -3,9 +3,30 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- DYNAMIC OPEN GRAPH TAGS - Updated by JavaScript   -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://igshare.am-ip.hu/" />
+    <meta property="og:title" id="og-title" content="✨ Reel Viewer" />
+    <meta property="og:description" id="og-description" content="Watch Instagram Reels instantly - no app needed!" />
+    <meta property="og:image" id="og-image" content="https://igshare.am-ip.hu/default-og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="Reel Viewer" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" id="twitter-title" content="✨ Reel Viewer" />
+    <meta name="twitter:description" id="twitter-description" content="Watch Instagram Reels instantly - no app needed!" />
+    <meta name="twitter:image" id="twitter-image" content="https://igshare.am-ip.hu/default-og.jpg" />
+    
     <title>✨ Reel Viewer</title>
+    
     <style>
-        /* --- CSS Variables for Neon Theme --- */
+        /* --- Copy ALL your existing styles here --- */
+        /* (Keep your neon theme styles exactly as they are) */
         :root {
             --neon-cyan: #00f0ff;
             --neon-pink: #ff00e6;
@@ -21,16 +42,8 @@
             --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
-        /* --- Reset & Base --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
 
         body {
             font-family: var(--font-main);
@@ -46,7 +59,6 @@
             color: var(--text-primary);
         }
 
-        /* --- Animated Background --- */
         body::before {
             content: '';
             position: fixed;
@@ -61,7 +73,6 @@
             z-index: 0;
         }
 
-        /* --- Main Container --- */
         .container {
             position: relative;
             max-width: 680px;
@@ -72,27 +83,18 @@
             border-radius: 24px;
             padding: 32px 28px;
             border: 1px solid rgba(0, 240, 255, 0.12);
-            box-shadow:
-                var(--border-glow),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            box-shadow: var(--border-glow), inset 0 1px 0 rgba(255, 255, 255, 0.05);
             z-index: 1;
             animation: fadeIn 0.6s ease-out;
         }
 
-        /* --- Neon Border Glow Animation --- */
         .container::before {
             content: '';
             position: absolute;
             inset: -2px;
             border-radius: 26px;
             padding: 2px;
-            background: conic-gradient(from 0deg,
-                    transparent,
-                    var(--neon-cyan),
-                    var(--neon-pink),
-                    var(--neon-purple),
-                    var(--neon-cyan),
-                    transparent);
+            background: conic-gradient(from 0deg, transparent, var(--neon-cyan), var(--neon-pink), var(--neon-purple), var(--neon-cyan), transparent);
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
             mask-composite: exclude;
@@ -111,7 +113,6 @@
             100% { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- Header --- */
         .header {
             display: flex;
             align-items: center;
@@ -154,7 +155,6 @@
             -webkit-text-fill-color: var(--neon-cyan);
         }
 
-        /* --- Search Bar --- */
         .search-box {
             display: flex;
             gap: 12px;
@@ -234,7 +234,6 @@
             z-index: 1;
         }
 
-        /* --- Error Message --- */
         #error {
             color: #ff4466;
             background: rgba(255, 68, 102, 0.08);
@@ -247,7 +246,6 @@
             backdrop-filter: blur(10px);
         }
 
-        /* --- Share Section --- */
         .share-section {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(0, 240, 255, 0.08);
@@ -309,7 +307,6 @@
             box-shadow: 0 0 20px rgba(0, 240, 255, 0.05);
         }
 
-        /* --- Player Container --- */
         #player-container {
             min-height: 420px;
             background: rgba(0, 0, 0, 0.3);
@@ -343,7 +340,6 @@
             width: 100%;
         }
 
-        /* --- Loading State --- */
         .loading {
             color: var(--neon-cyan);
             animation: pulseText 1.4s ease-in-out infinite;
@@ -356,7 +352,6 @@
             50% { opacity: 0.3; }
         }
 
-        /* --- Instagram Attribution --- */
         .instagram-attribution {
             text-align: center;
             font-size: 11px;
@@ -376,7 +371,6 @@
             color: var(--neon-pink);
         }
 
-        /* --- Scrollbar Styling --- */
         ::-webkit-scrollbar {
             width: 4px;
         }
@@ -389,62 +383,51 @@
             box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
         }
 
-        /* --- Responsive --- */
         @media (max-width: 600px) {
             .container {
                 padding: 20px 16px;
                 border-radius: 20px;
             }
-
             .search-box {
                 flex-direction: column;
                 gap: 10px;
             }
-
             .search-box input {
                 min-width: auto;
                 padding: 16px 18px;
-                font-size: 16px; /* Prevents iOS zoom */
+                font-size: 16px;
             }
-
             .search-box button {
                 width: 100%;
                 justify-content: center;
                 padding: 16px;
                 font-size: 15px;
             }
-
             .share-section {
                 flex-direction: column;
                 align-items: stretch;
                 gap: 8px;
                 padding: 14px 16px;
             }
-
             .share-section input {
                 min-width: auto;
                 font-size: 12px;
                 padding: 6px 0;
             }
-
             #player-container {
                 min-height: 340px;
                 padding: 20px 12px;
                 border-radius: 12px;
             }
-
             #player-container iframe {
                 min-height: 380px;
             }
-
             .header {
                 gap: 8px;
             }
-
             .logo-icon {
                 font-size: 22px;
             }
-
             .container::before {
                 border-radius: 22px;
             }
@@ -454,22 +437,18 @@
             .container {
                 padding: 16px 12px;
             }
-
             #player-container iframe {
                 min-height: 320px;
             }
-
             #player-container {
                 min-height: 280px;
             }
-
             .search-box input {
                 padding: 14px 14px;
                 font-size: 15px;
             }
         }
 
-        /* --- Safe area for notched phones --- */
         @supports (padding: max(0px)) {
             .container {
                 padding-left: max(28px, env(safe-area-inset-left));
@@ -477,7 +456,6 @@
             }
         }
 
-        /* --- Dark mode tweaks for Instagram embed --- */
         #player-container .instagram-media {
             background: transparent !important;
         }
@@ -530,7 +508,10 @@
     </div>
 
     <script>
-        // --- DOM Elements ---
+        // ═══════════════════════════════════════════════════
+        // MAIN APP SCRIPT
+        // ═══════════════════════════════════════════════════
+
         const input = document.getElementById('reelInput');
         const loadBtn = document.getElementById('loadButton');
         const player = document.getElementById('player-container');
@@ -561,8 +542,69 @@
             return `${window.location.origin}${window.location.pathname}?reel=${reelId}`;
         }
 
+        // --- Update OG Tags for Social Sharing ---
+        function updateOGTags(reelId, thumbnailUrl, caption) {
+            const baseUrl = 'https://igshare.am-ip.hu';
+            const shareUrl = `${baseUrl}?reel=${reelId}`;
+            
+            // Update OG tags
+            document.getElementById('og-title').content = `📱 Instagram Reel`;
+            document.getElementById('og-description').content = caption || 'Watch this Instagram Reel instantly!';
+            document.getElementById('og-image').content = thumbnailUrl || `${baseUrl}/default-og.jpg`;
+            document.getElementById('og-url').content = shareUrl;
+            
+            // Update Twitter tags
+            document.getElementById('twitter-title').content = `📱 Instagram Reel`;
+            document.getElementById('twitter-description').content = caption || 'Watch this Instagram Reel instantly!';
+            document.getElementById('twitter-image').content = thumbnailUrl || `${baseUrl}/default-og.jpg`;
+        }
+
+        // --- Fetch Thumbnail from Instagram ---
+        async function fetchReelThumbnail(reelId) {
+            try {
+                const apiUrl = `https://graph.facebook.com/v25.0/instagram_oembed?url=https://instagram.com/reel/${reelId}`;
+                const response = await fetch(apiUrl);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch Reel data');
+                }
+                
+                const data = await response.json();
+                
+                // Extract thumbnail URL from the HTML
+                let thumbnailUrl = null;
+                let caption = null;
+                
+                if (data.html) {
+                    // Try to find thumbnail in the HTML
+                    const imgMatch = data.html.match(/https:\/\/[^\s"']+\.(jpg|jpeg|png|webp)/i);
+                    if (imgMatch) {
+                        thumbnailUrl = imgMatch[0];
+                    }
+                    
+                    // Try to find caption
+                    const captionMatch = data.html.match(/<a[^>]*>([^<]*)<\/a>/);
+                    if (captionMatch && captionMatch[1].length > 5) {
+                        caption = captionMatch[1].trim();
+                    }
+                }
+                
+                return {
+                    thumbnailUrl: thumbnailUrl || null,
+                    caption: caption || 'Watch this Instagram Reel instantly!'
+                };
+                
+            } catch (error) {
+                console.error('Error fetching thumbnail:', error);
+                return {
+                    thumbnailUrl: null,
+                    caption: 'Watch this Instagram Reel instantly!'
+                };
+            }
+        }
+
         // --- Load Reel with Iframe ---
-        function loadReelWithIframe(rawInput) {
+        async function loadReelWithIframe(rawInput) {
             try {
                 const normalizedUrl = normalizeInstagramUrl(rawInput);
                 const reelId = extractReelId(normalizedUrl);
@@ -578,6 +620,10 @@
 
                 // Show loading
                 player.innerHTML = `<span class="loading">⏳ Loading Reel...</span>`;
+
+                // --- Fetch thumbnail for OG tags ---
+                const { thumbnailUrl, caption } = await fetchReelThumbnail(reelId);
+                updateOGTags(reelId, thumbnailUrl, caption);
 
                 // Build the embed URL
                 const embedUrl = `https://www.instagram.com/reel/${reelId}/embed`;
