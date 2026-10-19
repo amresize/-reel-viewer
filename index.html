@@ -2,436 +2,696 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0E1015" />
+
+    <!-- Apply saved / system theme before first paint to avoid a flash -->
+    <script>
+        (function () {
+            try {
+                var t = localStorage.getItem('reelviewer:theme');
+                if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                document.documentElement.dataset.theme = t;
+            } catch (e) {
+                document.documentElement.dataset.theme = 'light';
+            }
+        })();
+    </script>
+
     <!-- ═══════════════════════════════════════════════════ -->
-    <!-- OPEN GRAPH TAGS (Updated via JavaScript)          -->
+    <!-- OPEN GRAPH TAGS (Updated via JavaScript)            -->
     <!-- ═══════════════════════════════════════════════════ -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://igshare.am-ip.hu/" />
-    <meta property="og:title" content="✨ Reel Viewer" />
+    <meta property="og:title" content="Reel Viewer" />
     <meta property="og:description" content="Watch Instagram Reels" />
     <meta property="og:image" content="https://igshare.am-ip.hu/default-og.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content="Reel Viewer" />
-    
+
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="✨ Reel Viewer" />
+    <meta name="twitter:title" content="Reel Viewer" />
     <meta name="twitter:description" content="Watch Instagram Reels instantly" />
     <meta name="twitter:image" content="https://igshare.am-ip.hu/default-og.jpg" />
-    
-    <title>✨ Reel Viewer</title>
-    
+
+    <title>Reel Viewer</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='1' x2='1' y2='0'%3E%3Cstop offset='0' stop-color='%23F58529'/%3E%3Cstop offset='.45' stop-color='%23DD2A7B'/%3E%3Cstop offset='.75' stop-color='%238134AF'/%3E%3Cstop offset='1' stop-color='%23515BD4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Cpath d='M12.5 9.5v13l11-6.5z' fill='%23fff'/%3E%3C/svg%3E" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&display=swap" rel="stylesheet" />
+
     <style>
         :root {
-            --neon-cyan: #00f0ff;
-            --neon-pink: #ff00e6;
-            --neon-purple: #b300ff;
-            --neon-blue: #0066ff;
-            --bg-dark: #0a0a12;
-            --bg-card: rgba(15, 15, 30, 0.85);
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.6);
-            --border-glow: 0 0 20px rgba(0, 240, 255, 0.15);
-            --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --bg: #EDEFF3;
+            --surface: #FFFFFF;
+            --surface-2: #F4F5F8;
+            --line: #DADDE5;
+            --line-strong: #C5CAD6;
+            --ink: #13151B;
+            --muted: #596072;
+            --accent: #D42A6A;
+            --accent-hover: #B91E58;
+            --on-accent: #FFFFFF;
+            --focus: rgba(212, 42, 106, 0.30);
+            --danger: #B42336;
+            --danger-bg: #FDECEF;
+            --danger-line: #F3C3CB;
+            --glow: 0.26;
+            --shadow: 0 1px 2px rgba(19, 21, 27, 0.05), 0 10px 28px -14px rgba(19, 21, 27, 0.18);
+            --font: 'Bricolage Grotesque', system-ui, -apple-system, 'Segoe UI', sans-serif;
+            color-scheme: light;
+        }
+
+        :root[data-theme="dark"] {
+            --bg: #0E1015;
+            --surface: #161920;
+            --surface-2: #1C2029;
+            --line: #272C37;
+            --line-strong: #363C4A;
+            --ink: #F1F2F5;
+            --muted: #9AA0AF;
+            --accent: #FF5C93;
+            --accent-hover: #FF7BA8;
+            --on-accent: #1A0B12;
+            --focus: rgba(255, 92, 147, 0.32);
+            --danger: #FF8A9A;
+            --danger-bg: rgba(255, 92, 120, 0.10);
+            --danger-line: rgba(255, 92, 120, 0.28);
+            --glow: 0.34;
+            --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 28px -14px rgba(0, 0, 0, 0.6);
+            color-scheme: dark;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        [hidden] { display: none !important; }
+
+        html { -webkit-text-size-adjust: 100%; }
 
         body {
-            font-family: var(--font-main);
-            background: var(--bg-dark);
-            background-image:
-                radial-gradient(ellipse at 20% 50%, rgba(0, 240, 255, 0.05) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 50%, rgba(255, 0, 230, 0.05) 0%, transparent 60%);
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--ink);
             min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            color: var(--text-primary);
+            flex-direction: column;
+            line-height: 1.5;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.2s ease, color 0.2s ease;
         }
 
-        .container {
-            position: relative;
-            max-width: 680px;
-            width: 100%;
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 24px;
-            padding: 32px 28px;
-            border: 1px solid rgba(0, 240, 255, 0.12);
-            box-shadow: var(--border-glow), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            z-index: 1;
-            animation: fadeIn 0.6s ease-out;
+        :focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
         }
 
-        .container::before {
-            content: '';
+        .sr-only {
             position: absolute;
-            inset: -2px;
-            border-radius: 26px;
-            padding: 2px;
-            background: conic-gradient(from 0deg, transparent, var(--neon-cyan), var(--neon-pink), var(--neon-purple), var(--neon-cyan), transparent);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            opacity: 0.4;
-            animation: rotateBorder 8s linear infinite;
+            width: 1px; height: 1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            white-space: nowrap;
+        }
+
+        svg { display: block; flex: none; }
+
+        /* ── Top bar ─────────────────────────────────────── */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px clamp(20px, 4vw, 40px);
+            padding-top: calc(20px + env(safe-area-inset-top, 0px));
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: -0.01em;
+        }
+
+        .mark {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            color: #fff;
+            background: linear-gradient(45deg, #F58529 0%, #DD2A7B 45%, #8134AF 75%, #515BD4 100%);
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            display: inline-grid;
+            place-items: center;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+            transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+        }
+
+        .icon-btn:hover {
+            background: var(--surface);
+            border-color: var(--line);
+            color: var(--ink);
+        }
+
+        #themeToggle .i-sun { display: none; }
+        :root[data-theme="dark"] #themeToggle .i-sun { display: block; }
+        :root[data-theme="dark"] #themeToggle .i-moon { display: none; }
+
+        /* ── Layout ──────────────────────────────────────── */
+        .layout {
+            flex: 1;
+            width: 100%;
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: clamp(12px, 3vw, 32px) clamp(20px, 4vw, 40px) 56px;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 392px;
+            gap: clamp(40px, 7vw, 96px);
+            align-items: start;
+        }
+
+        .panel { padding-top: clamp(0px, 6vh, 56px); min-width: 0; }
+
+        h1 {
+            font-size: clamp(36px, 5.4vw, 56px);
+            font-weight: 700;
+            line-height: 1.02;
+            letter-spacing: -0.035em;
+            max-width: 12ch;
+        }
+
+        .lede {
+            margin-top: 18px;
+            font-size: 17px;
+            color: var(--muted);
+            max-width: 42ch;
+        }
+
+        /* ── Composer ────────────────────────────────────── */
+        .composer { margin-top: 32px; }
+
+        .field {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            height: 54px;
+            padding: 0 8px 0 16px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            color: var(--muted);
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .field:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--focus);
+        }
+
+        .field input {
+            flex: 1;
+            min-width: 0;
+            height: 100%;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            color: var(--ink);
+            font: inherit;
+            font-size: 16px;
+        }
+
+        .field input::placeholder { color: var(--muted); opacity: 0.8; }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: 48px;
+            padding: 0 20px;
+            border-radius: 12px;
+            border: 1px solid var(--line-strong);
+            background: var(--surface);
+            color: var(--ink);
+            font: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+        }
+
+        .btn:hover { background: var(--surface-2); }
+        .btn:active { transform: translateY(1px); }
+
+        .btn.primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--on-accent);
+        }
+
+        .btn.primary:hover {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+
+        .actions .primary { flex: 1; }
+
+        .btn.sm {
+            height: 36px;
+            padding: 0 14px;
+            font-size: 14px;
+            border-radius: 10px;
+        }
+
+        .hint {
+            display: none;
+            margin-top: 12px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        @media (hover: hover) and (pointer: fine) { .hint { display: block; } }
+
+        kbd {
+            display: inline-block;
+            min-width: 20px;
+            padding: 0 6px;
+            border: 1px solid var(--line-strong);
+            border-bottom-width: 2px;
+            border-radius: 6px;
+            background: var(--surface);
+            font: inherit;
+            font-size: 12px;
+            text-align: center;
+            color: var(--ink);
+        }
+
+        .error {
+            margin-top: 14px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--danger-line);
+            background: var(--danger-bg);
+            color: var(--danger);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* ── Share ───────────────────────────────────────── */
+        .share { margin-top: 32px; }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--muted);
+        }
+
+        .share-field {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            padding: 6px 6px 6px 14px;
+            background: var(--surface-2);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+        }
+
+        .share-field input {
+            flex: 1;
+            min-width: 0;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            color: var(--ink);
+            font: inherit;
+            font-size: 14px;
+            text-overflow: ellipsis;
+        }
+
+        .share-field input::selection { background: var(--focus); }
+
+        .share-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        /* ── Recent ──────────────────────────────────────── */
+        .recent { margin-top: 40px; }
+
+        .recent-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+        }
+
+        .link-btn {
+            border: 0;
+            background: none;
+            color: var(--muted);
+            font: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 6px;
+        }
+
+        .link-btn:hover { color: var(--accent); }
+
+        .recent ul {
+            list-style: none;
+            margin-top: 8px;
+            border-top: 1px solid var(--line);
+        }
+
+        .recent li {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .recent-open {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 4px;
+            border: 0;
+            border-radius: 8px;
+            background: none;
+            color: inherit;
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .recent-open:hover .rid { color: var(--accent); }
+
+        .tile {
+            width: 30px;
+            height: 52px;
+            display: grid;
+            place-items: center;
+            flex: none;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--surface-2);
+            color: var(--muted);
+        }
+
+        .tile img { width: 100%; height: 100%; object-fit: cover; }
+
+        .rmeta { min-width: 0; }
+
+        .rid {
+            display: block;
+            font-size: 15px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: color 0.15s ease;
+        }
+
+        .when { display: block; font-size: 13px; color: var(--muted); }
+
+        .recent .icon-btn { width: 36px; height: 36px; }
+
+        /* ── Stage ───────────────────────────────────────── */
+        .stage {
+            position: relative;
+            width: 100%;
+            max-width: 392px;
+            margin: 0 auto;
+        }
+
+        .stage::before {
+            content: "";
+            position: absolute;
+            inset: 8% -12% 4%;
+            z-index: 0;
+            background:
+                radial-gradient(40% 40% at 25% 30%, #F58529, transparent 70%),
+                radial-gradient(45% 45% at 75% 35%, #DD2A7B, transparent 70%),
+                radial-gradient(50% 50% at 50% 80%, #515BD4, transparent 70%);
+            filter: blur(60px);
+            opacity: var(--glow);
             pointer-events: none;
         }
 
-        @keyframes rotateBorder {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        .header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 6px;
-        }
-
-        .logo-icon {
-            font-size: 28px;
-            filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.3));
-            animation: pulseIcon 3s ease-in-out infinite;
-        }
-
-        @keyframes pulseIcon {
-            0%, 100% { filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.3)); }
-            50% { filter: drop-shadow(0 0 25px rgba(255, 0, 230, 0.4)); }
-        }
-
-        h1 {
-            font-size: clamp(22px, 5vw, 28px);
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.5px;
-        }
-
-        .subtitle {
-            color: var(--text-secondary);
-            font-size: clamp(13px, 2.5vw, 15px);
-            margin-bottom: 24px;
-            padding-left: 4px;
-            font-weight: 400;
-            letter-spacing: 0.3px;
-        }
-
-        .subtitle span {
-            color: var(--neon-cyan);
-            -webkit-text-fill-color: var(--neon-cyan);
-        }
-
-        .search-box {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 18px;
-            flex-wrap: wrap;
-        }
-
-        .search-box input {
-            flex: 1;
-            min-width: 180px;
-            padding: 14px 18px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(0, 240, 255, 0.15);
-            border-radius: 14px;
-            font-size: clamp(14px, 2.5vw, 16px);
-            color: var(--text-primary);
-            outline: none;
-            transition: all 0.3s ease;
-            font-family: var(--font-main);
-            backdrop-filter: blur(10px);
-        }
-
-        .search-box input::placeholder {
-            color: rgba(255, 255, 255, 0.3);
-            font-weight: 300;
-        }
-
-        .search-box input:focus {
-            border-color: var(--neon-cyan);
-            box-shadow: 0 0 25px rgba(0, 240, 255, 0.1), inset 0 0 25px rgba(0, 240, 255, 0.03);
-            background: rgba(255, 255, 255, 0.06);
-        }
-
-        .search-box button {
-            padding: 14px 32px;
-            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue));
-            color: #fff;
-            border: none;
-            border-radius: 14px;
-            font-size: clamp(14px, 2.5vw, 16px);
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            box-shadow: 0 0 30px rgba(0, 240, 255, 0.15);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .search-box button::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            border-radius: 14px;
-        }
-
-        .search-box button:hover::before {
-            opacity: 1;
-        }
-
-        .search-box button:hover {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 0 50px rgba(0, 240, 255, 0.25);
-        }
-
-        .search-box button:active {
-            transform: scale(0.97);
-        }
-
-        .search-box button span {
+        .device {
             position: relative;
             z-index: 1;
-        }
-
-        #error {
-            color: #ff4466;
-            background: rgba(255, 68, 102, 0.08);
-            border: 1px solid rgba(255, 68, 102, 0.2);
-            padding: 12px 18px;
-            border-radius: 12px;
-            margin-bottom: 18px;
-            display: none;
-            font-size: 14px;
-            backdrop-filter: blur(10px);
-        }
-
-        .share-section {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(0, 240, 255, 0.08);
-            border-radius: 14px;
-            padding: 12px 16px;
-            margin-bottom: 20px;
-            display: none;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .share-section:hover {
-            border-color: rgba(0, 240, 255, 0.2);
-        }
-
-        .share-section .label {
-            font-size: 13px;
-            color: var(--text-secondary);
-            font-weight: 500;
-            letter-spacing: 0.3px;
-        }
-
-        .share-section input {
-            flex: 1;
-            min-width: 140px;
-            background: transparent;
-            border: none;
-            font-size: 13px;
-            color: var(--text-primary);
-            outline: none;
-            padding: 4px 0;
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            letter-spacing: 0.2px;
-        }
-
-        .share-section input::selection {
-            background: rgba(0, 240, 255, 0.2);
-            color: #fff;
-        }
-
-        .share-section button {
-            background: none;
-            border: none;
-            color: var(--neon-cyan);
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            padding: 6px 14px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            letter-spacing: 0.5px;
-        }
-
-        .share-section button:hover {
-            background: rgba(0, 240, 255, 0.08);
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.05);
+            padding: 10px;
+            border-radius: 48px;
+            background: #0A0B0F;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.07), 0 40px 80px -30px rgba(0, 0, 0, 0.55);
         }
 
         #player-container {
-            min-height: 420px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 14px;
-            padding: 30px 20px;
-            overflow: hidden;
-            border: 1px solid rgba(0, 240, 255, 0.06);
             position: relative;
-            transition: all 0.4s ease;
-        }
-
-        #player-container .placeholder-icon {
-            font-size: 56px;
-            margin-bottom: 14px;
-            opacity: 0.4;
-            filter: drop-shadow(0 0 30px rgba(0, 240, 255, 0.05));
+            display: grid;
+            place-items: center;
+            height: clamp(520px, 76vh, 740px);
+            height: clamp(520px, 76dvh, 740px);
+            border-radius: 38px;
+            overflow: hidden;
+            background: #13151B;
+            color: #959CAC;
         }
 
         #player-container iframe {
-            max-width: 100%;
-            border: none !important;
-            border-radius: 12px;
-            background: transparent;
-            min-height: 450px;
+            position: absolute;
+            inset: 0;
             width: 100%;
+            height: 100%;
+            border: 0;
+            background: #fff;
+            opacity: 0;
+            transition: opacity 0.45s ease;
         }
 
-        .loading {
-            color: var(--neon-cyan);
-            animation: pulseText 1.4s ease-in-out infinite;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-        }
+        #player-container iframe.ready { opacity: 1; }
 
-        @keyframes pulseText {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        .instagram-attribution {
+        .state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            max-width: 260px;
+            padding: 32px;
             text-align: center;
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.25);
-            margin-top: 12px;
-            padding: 6px 0;
-            letter-spacing: 0.5px;
+            font-size: 15px;
         }
 
-        .instagram-attribution a {
-            color: var(--neon-cyan);
-            text-decoration: none;
-            transition: color 0.3s ease;
+        .state strong {
+            font-size: 17px;
+            font-weight: 600;
+            color: #E9EBF0;
         }
 
-        .instagram-attribution a:hover {
-            color: var(--neon-pink);
+        .play-badge {
+            width: 64px;
+            height: 64px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 50%;
+            color: #E9EBF0;
         }
 
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px 16px;
-                border-radius: 20px;
+        .spinner {
+            width: 28px;
+            height: 28px;
+            margin-bottom: 6px;
+            border: 3px solid rgba(255, 255, 255, 0.14);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .caption {
+            position: relative;
+            z-index: 1;
+            margin-top: 18px;
+            font-size: 13px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .caption a {
+            color: var(--ink);
+            text-underline-offset: 3px;
+        }
+
+        .caption a:hover { color: var(--accent); }
+
+        /* ── Footer ──────────────────────────────────────── */
+        .footer {
+            padding: 20px clamp(20px, 4vw, 40px) calc(28px + env(safe-area-inset-bottom, 0px));
+            text-align: center;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        /* ── Responsive ──────────────────────────────────── */
+        @media (max-width: 900px) {
+            .layout {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 48px;
             }
-            .search-box {
-                flex-direction: column;
-                gap: 10px;
+            .panel { padding-top: 0; }
+            h1 { max-width: 14ch; }
+        }
+
+        @media (max-width: 480px) {
+            .btn { padding: 0 16px; }
+            .device { padding: 8px; border-radius: 40px; }
+            #player-container { border-radius: 32px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
             }
-            .search-box input {
-                min-width: auto;
-                padding: 16px 18px;
-                font-size: 16px;
-            }
-            .search-box button {
-                width: 100%;
-                justify-content: center;
-                padding: 16px;
-                font-size: 15px;
-            }
-            .share-section {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 8px;
-                padding: 14px 16px;
-            }
-            .share-section input {
-                min-width: auto;
-                font-size: 12px;
-                padding: 6px 0;
-            }
-            #player-container {
-                min-height: 340px;
-                padding: 20px 12px;
-                border-radius: 12px;
-            }
-            #player-container iframe {
-                min-height: 380px;
-            }
+            .spinner { animation-duration: 2.5s; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header">
-            <span class="logo-icon">✦</span>
-            <h1>Reel Viewer</h1>
+    <header class="topbar">
+        <div class="brand">
+            <span class="mark" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M7 3.5v17L21 12z"/></svg>
+            </span>
+            Reel Viewer
         </div>
-        <p class="subtitle">
-            Paste any <span>public</span> Instagram Reel link to watch it here
-        </p>
+        <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch between light and dark theme">
+            <svg class="i-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+            <svg class="i-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+    </header>
 
-        <div id="error"></div>
+    <main class="layout">
 
-        <div class="search-box">
-            <input
-            type="text"
-            id="reelInput"
-            placeholder="https://instagram.com/reel/..."
-            spellcheck="false"
-            autocomplete="off"
-            />
-            <button id="loadButton"><span>▶ Load Reel</span></button>
-        </div>
+        <section class="panel">
+            <h1>Paste a link, watch the Reel</h1>
+            <p class="lede">Works with any public Instagram Reel. Share the page link so anyone can watch it without hunting for the original.</p>
 
-        <div class="share-section" id="shareSection">
-            <span class="label">🔗 Share</span>
-            <input type="text" id="shareInput" readonly />
-            <button id="copyButton">📋 Copy</button>
-        </div>
+            <form class="composer" id="loadForm" novalidate>
+                <label class="sr-only" for="reelInput">Instagram Reel link</label>
+                <div class="field">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.1 0l3-3a5 5 0 0 0-7.1-7.1l-1.2 1.2"/><path d="M14 11a5 5 0 0 0-7.1 0l-3 3A5 5 0 0 0 11 21.1l1.2-1.2"/></svg>
+                    <input type="text"
+                           id="reelInput"
+                           inputmode="url"
+                           placeholder="instagram.com/reel/…"
+                           spellcheck="false"
+                           autocomplete="off"
+                           autocapitalize="off" />
+                    <button class="icon-btn" id="clearButton" type="button" aria-label="Clear link" hidden>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+                    </button>
+                </div>
 
-        <div id="player-container">
-            <div class="placeholder-icon">🎬</div>
-            <span>Paste a link above to view the Reel</span>
-        </div>
+                <div class="actions">
+                    <button class="btn" id="pasteButton" type="button" hidden>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="3" width="8" height="4" rx="1"/><path d="M16 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/></svg>
+                        Paste
+                    </button>
+                    <button class="btn primary" id="loadButton" type="submit">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 3.5v17L21 12z"/></svg>
+                        Watch Reel
+                    </button>
+                </div>
 
-        <div class="instagram-attribution" id="attribution" style="display: none;">
-            Content from <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
-        </div>
-    </div>
+                <p class="hint">Press <kbd>/</kbd> to jump to the link field</p>
+            </form>
+
+            <div class="error" id="error" role="alert" hidden></div>
+
+            <div class="share" id="shareSection" hidden>
+                <label class="section-title" for="shareInput">Share link</label>
+                <div class="share-field">
+                    <input type="text" id="shareInput" readonly />
+                    <button class="btn sm primary" id="copyButton" type="button">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+                        <span id="copyLabel">Copy</span>
+                    </button>
+                </div>
+                <div class="share-links">
+                    <button class="btn sm" id="nativeShare" type="button" hidden>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13M7 8l5-5 5 5"/><path d="M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg>
+                        Share
+                    </button>
+                    <a class="btn sm" id="openIg" href="https://www.instagram.com/" target="_blank" rel="noopener">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg>
+                        Open on Instagram
+                    </a>
+                </div>
+            </div>
+
+            <section class="recent" id="recentSection" hidden aria-labelledby="recentTitle">
+                <div class="recent-head">
+                    <h2 class="section-title" id="recentTitle">Recently watched</h2>
+                    <button class="link-btn" id="clearRecent" type="button">Clear all</button>
+                </div>
+                <ul id="recentList"></ul>
+            </section>
+        </section>
+
+        <section class="stage" aria-label="Reel player">
+            <div class="device">
+                <div id="player-container"></div>
+            </div>
+            <p class="caption" id="attribution" hidden>
+                Content from <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>. Private or removed Reels won’t play.
+            </p>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        Reel Viewer is an independent tool and isn’t affiliated with Instagram.
+    </footer>
+
+    <div class="sr-only" id="status" role="status" aria-live="polite"></div>
+
+    <noscript>
+        <p style="padding:16px;text-align:center">Reel Viewer needs JavaScript to load Reels.</p>
+    </noscript>
 
     <script>
         // ═══════════════════════════════════════════════════
@@ -439,15 +699,48 @@
         // ═══════════════════════════════════════════════════
 
         const input = document.getElementById('reelInput');
+        const form = document.getElementById('loadForm');
         const loadBtn = document.getElementById('loadButton');
+        const pasteBtn = document.getElementById('pasteButton');
+        const clearBtn = document.getElementById('clearButton');
         const player = document.getElementById('player-container');
         const errorDiv = document.getElementById('error');
         const shareSection = document.getElementById('shareSection');
         const shareInput = document.getElementById('shareInput');
         const copyBtn = document.getElementById('copyButton');
+        const copyLabel = document.getElementById('copyLabel');
+        const nativeShareBtn = document.getElementById('nativeShare');
+        const openIg = document.getElementById('openIg');
         const attribution = document.getElementById('attribution');
+        const recentSection = document.getElementById('recentSection');
+        const recentList = document.getElementById('recentList');
+        const clearRecentBtn = document.getElementById('clearRecent');
+        const statusEl = document.getElementById('status');
+        const themeToggle = document.getElementById('themeToggle');
+
+        const BASE_TITLE = 'Reel Viewer';
+        const RECENT_KEY = 'reelviewer:recent';
+        const THEME_KEY = 'reelviewer:theme';
+        const MAX_RECENT = 8;
+
+        const EMPTY_STATE = `
+            <div class="state">
+                <div class="play-badge">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 3.5v17L21 12z"/></svg>
+                </div>
+                <strong>Your Reel plays here</strong>
+                <span>Paste a Reel link to start watching.</span>
+            </div>`;
+
+        let loadToken = 0;
 
         // --- Helper Functions ---
+        function extractCandidate(raw) {
+            const text = raw.trim();
+            const match = text.match(/https?:\/\/[^\s]+/i) || text.match(/(?:www\.)?instagram\.com\/[^\s]+/i);
+            return match ? match[0] : text;
+        }
+
         function normalizeInstagramUrl(input) {
             let url = input.trim();
             if (/^[A-Za-z0-9_-]+$/.test(url)) {
@@ -460,7 +753,7 @@
         }
 
         function extractReelId(url) {
-            const match = url.match(/instagram\.com\/reel\/([A-Za-z0-9_-]+)/);
+            const match = url.match(/instagram\.com\/reels?\/([A-Za-z0-9_-]+)/);
             return match ? match[1] : null;
         }
 
@@ -468,25 +761,37 @@
             return `${window.location.origin}${window.location.pathname}?reel=${reelId}`;
         }
 
+        function showError(message) {
+            errorDiv.textContent = message;
+            errorDiv.hidden = false;
+        }
+
+        function clearError() {
+            errorDiv.textContent = '';
+            errorDiv.hidden = true;
+        }
+
+        function syncClearButton() {
+            clearBtn.hidden = input.value.length === 0;
+        }
+
+        function announce(message) {
+            statusEl.textContent = '';
+            setTimeout(() => { statusEl.textContent = message; }, 30);
+        }
+
         // --- Update OG Tags (simple version) ---
         function updateOGTags(reelId, thumbnailUrl) {
             const baseUrl = 'https://igshare.am-ip.hu';
             const shareUrl = `${baseUrl}?reel=${reelId}`;
-            
-            // Update OG tags using querySelector
+
             const ogImage = document.querySelector('meta[property="og:image"]');
             const ogUrl = document.querySelector('meta[property="og:url"]');
             const twitterImage = document.querySelector('meta[name="twitter:image"]');
-            
-            if (ogImage && thumbnailUrl) {
-                ogImage.setAttribute('content', thumbnailUrl);
-            }
-            if (ogUrl) {
-                ogUrl.setAttribute('content', shareUrl);
-            }
-            if (twitterImage && thumbnailUrl) {
-                twitterImage.setAttribute('content', thumbnailUrl);
-            }
+
+            if (ogImage && thumbnailUrl) ogImage.setAttribute('content', thumbnailUrl);
+            if (ogUrl) ogUrl.setAttribute('content', shareUrl);
+            if (twitterImage && thumbnailUrl) twitterImage.setAttribute('content', thumbnailUrl);
         }
 
         // --- Fetch Thumbnail from Instagram ---
@@ -494,18 +799,12 @@
             try {
                 const apiUrl = `https://graph.facebook.com/v25.0/instagram_oembed?url=https://instagram.com/reel/${reelId}`;
                 const response = await fetch(apiUrl);
-                
-                if (!response.ok) {
-                    return null;
-                }
-                
+                if (!response.ok) return null;
+
                 const data = await response.json();
-                
                 if (data.html) {
                     const imgMatch = data.html.match(/https:\/\/[^\s"']+\.(jpg|jpeg|png|webp)/i);
-                    if (imgMatch) {
-                        return imgMatch[0];
-                    }
+                    if (imgMatch) return imgMatch[0];
                 }
                 return null;
             } catch (error) {
@@ -514,64 +813,195 @@
             }
         }
 
-        // --- Load Reel with Iframe ---
-        async function loadReelWithIframe(rawInput) {
+        // --- Recently watched (stored in this browser only) ---
+        function readRecent() {
             try {
-                const normalizedUrl = normalizeInstagramUrl(rawInput);
+                const list = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]');
+                return Array.isArray(list) ? list.filter(x => x && typeof x.id === 'string') : [];
+            } catch {
+                return [];
+            }
+        }
+
+        function writeRecent(list) {
+            try { localStorage.setItem(RECENT_KEY, JSON.stringify(list)); } catch { /* storage unavailable */ }
+        }
+
+        function addRecent(id) {
+            const existing = readRecent();
+            const prev = existing.find(x => x.id === id);
+            const list = existing.filter(x => x.id !== id);
+            list.unshift({ id, t: Date.now(), thumb: prev && prev.thumb ? prev.thumb : null });
+            writeRecent(list.slice(0, MAX_RECENT));
+            renderRecent();
+        }
+
+        function setRecentThumb(id, thumb) {
+            const list = readRecent();
+            const item = list.find(x => x.id === id);
+            if (item) {
+                item.thumb = thumb;
+                writeRecent(list);
+                renderRecent();
+            }
+        }
+
+        function removeRecent(id) {
+            writeRecent(readRecent().filter(x => x.id !== id));
+            renderRecent();
+        }
+
+        function timeAgo(ts) {
+            const s = Math.max(0, Math.floor((Date.now() - ts) / 1000));
+            if (s < 60) return 'Just now';
+            const m = Math.floor(s / 60);
+            if (m < 60) return `${m} min ago`;
+            const h = Math.floor(m / 60);
+            if (h < 24) return `${h} h ago`;
+            const d = Math.floor(h / 24);
+            return `${d} d ago`;
+        }
+
+        function renderRecent() {
+            const list = readRecent();
+            recentList.innerHTML = '';
+            recentSection.hidden = list.length === 0;
+
+            list.forEach(item => {
+                const li = document.createElement('li');
+
+                const open = document.createElement('button');
+                open.type = 'button';
+                open.className = 'recent-open';
+                open.addEventListener('click', () => loadReelWithIframe(`https://instagram.com/reel/${item.id}/`));
+
+                const tile = document.createElement('span');
+                tile.className = 'tile';
+                if (item.thumb) {
+                    const img = document.createElement('img');
+                    img.alt = '';
+                    img.referrerPolicy = 'no-referrer';
+                    img.src = item.thumb;
+                    img.addEventListener('error', () => { img.remove(); tile.innerHTML = playGlyph(); });
+                    tile.appendChild(img);
+                } else {
+                    tile.innerHTML = playGlyph();
+                }
+
+                const meta = document.createElement('span');
+                meta.className = 'rmeta';
+                const rid = document.createElement('span');
+                rid.className = 'rid';
+                rid.textContent = `Reel ${item.id}`;
+                const when = document.createElement('span');
+                when.className = 'when';
+                when.textContent = timeAgo(item.t);
+                meta.append(rid, when);
+
+                open.append(tile, meta);
+
+                const del = document.createElement('button');
+                del.type = 'button';
+                del.className = 'icon-btn';
+                del.setAttribute('aria-label', `Remove Reel ${item.id} from history`);
+                del.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+                del.addEventListener('click', () => removeRecent(item.id));
+
+                li.append(open, del);
+                recentList.appendChild(li);
+            });
+        }
+
+        function playGlyph() {
+            return '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 3.5v17L21 12z"/></svg>';
+        }
+
+        // --- Stage states ---
+        function resetStage() {
+            player.innerHTML = EMPTY_STATE;
+            shareSection.hidden = true;
+            attribution.hidden = true;
+            document.title = BASE_TITLE;
+        }
+
+        // --- Load Reel with Iframe ---
+        async function loadReelWithIframe(rawInput, options = {}) {
+            const push = options.push !== false;
+            const token = ++loadToken;
+
+            try {
+                const normalizedUrl = normalizeInstagramUrl(extractCandidate(rawInput));
                 const reelId = extractReelId(normalizedUrl);
 
                 if (!reelId) {
-                    throw new Error('Invalid Instagram Reel URL. Please paste a link like: https://instagram.com/reel/...');
+                    throw new Error('That isn’t a Reel link. Paste a link that looks like instagram.com/reel/…');
                 }
 
-                input.value = normalizedUrl;
-                errorDiv.style.display = 'none';
-                errorDiv.textContent = '';
-                attribution.style.display = 'none';
+                input.value = `https://www.instagram.com/reel/${reelId}/`;
+                syncClearButton();
+                clearError();
+                attribution.hidden = true;
 
-                player.innerHTML = `<span class="loading">⏳ Loading Reel...</span>`;
+                player.innerHTML = `
+                    <div class="state" role="status">
+                        <div class="spinner" aria-hidden="true"></div>
+                        <span>Loading Reel…</span>
+                    </div>`;
 
-                // Fetch thumbnail for OG tags
-                const thumbnailUrl = await fetchReelThumbnail(reelId);
-                if (thumbnailUrl) {
-                    updateOGTags(reelId, thumbnailUrl);
-                }
-
-                const embedUrl = `https://www.instagram.com/reel/${reelId}/embed`;
+                // Fetch thumbnail for OG tags and history (does not block playback)
+                fetchReelThumbnail(reelId).then(thumb => {
+                    if (thumb && token === loadToken) {
+                        updateOGTags(reelId, thumb);
+                        setRecentThumb(reelId, thumb);
+                    }
+                });
 
                 const iframe = document.createElement('iframe');
-                iframe.src = embedUrl;
-                iframe.width = '100%';
-                iframe.height = '600';
-                iframe.frameBorder = '0';
-                iframe.scrolling = 'no';
+                iframe.src = `https://www.instagram.com/reel/${reelId}/embed`;
+                iframe.title = `Instagram Reel ${reelId}`;
+                iframe.setAttribute('frameborder', '0');
+                iframe.setAttribute('scrolling', 'yes');
                 iframe.allowFullscreen = true;
-                iframe.style.borderRadius = '12px';
-                iframe.style.backgroundColor = 'transparent';
-                iframe.style.minHeight = '450px';
-                iframe.loading = 'lazy';
+                iframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture; fullscreen');
 
-                player.innerHTML = '';
+                const reveal = () => {
+                    if (token !== loadToken) return;
+                    const state = player.querySelector('.state');
+                    if (state) state.remove();
+                    iframe.classList.add('ready');
+                };
+                iframe.addEventListener('load', reveal);
+                setTimeout(reveal, 12000);
+
                 player.appendChild(iframe);
 
                 const shareUrl = buildShareLink(reelId);
                 shareInput.value = shareUrl;
-                shareSection.style.display = 'flex';
-                attribution.style.display = 'block';
+                openIg.href = `https://www.instagram.com/reel/${reelId}/`;
+                shareSection.hidden = false;
+                attribution.hidden = false;
+                document.title = `Reel ${reelId} · ${BASE_TITLE}`;
 
-                if (window.history && window.history.pushState) {
-                    window.history.pushState({ reelId }, '', `?reel=${reelId}`);
+                addRecent(reelId);
+
+                if (push && window.history && window.history.pushState) {
+                    const state = { reelId };
+                    if (window.history.state && window.history.state.reelId === reelId) {
+                        window.history.replaceState(state, '', `?reel=${reelId}`);
+                    } else {
+                        window.history.pushState(state, '', `?reel=${reelId}`);
+                    }
+                }
+
+                // On single-column layouts, bring the player into view
+                if (window.matchMedia('(max-width: 900px)').matches) {
+                    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                    player.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
                 }
 
             } catch (err) {
-                errorDiv.textContent = err.message || 'Something went wrong. Please try again.';
-                errorDiv.style.display = 'block';
-                player.innerHTML = `
-                    <div class="placeholder-icon">🎬</div>
-                    <span>Enter a valid Reel link to view it here</span>
-                `;
-                shareSection.style.display = 'none';
-                attribution.style.display = 'none';
+                showError(err.message || 'Something went wrong. Please try again.');
+                resetStage();
             }
         }
 
@@ -582,44 +1012,127 @@
             if (reelParam) {
                 const fullUrl = `https://instagram.com/reel/${reelParam}/`;
                 input.value = fullUrl;
-                loadReelWithIframe(fullUrl);
+                syncClearButton();
+                loadReelWithIframe(fullUrl, { push: false });
+            } else {
+                loadToken++;
+                resetStage();
+                clearError();
             }
         }
 
         // --- Copy to Clipboard ---
+        function flashCopied() {
+            const original = 'Copy';
+            copyLabel.textContent = 'Copied';
+            announce('Share link copied to clipboard');
+            setTimeout(() => { copyLabel.textContent = original; }, 2000);
+        }
+
         async function copyShareLink() {
             try {
                 await navigator.clipboard.writeText(shareInput.value);
-                const originalText = copyBtn.textContent;
-                copyBtn.textContent = '✅ Copied!';
-                setTimeout(() => { copyBtn.textContent = originalText; }, 2000);
+                flashCopied();
             } catch {
                 shareInput.select();
                 document.execCommand('copy');
-                const originalText = copyBtn.textContent;
-                copyBtn.textContent = '✅ Copied!';
-                setTimeout(() => { copyBtn.textContent = originalText; }, 2000);
+                flashCopied();
             }
         }
 
-        // --- Event Listeners ---
-        loadBtn.addEventListener('click', () => {
-            const url = input.value.trim();
-            if (url) loadReelWithIframe(url);
+        // --- Theme ---
+        themeToggle.addEventListener('click', () => {
+            const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+            document.documentElement.dataset.theme = next;
+            try { localStorage.setItem(THEME_KEY, next); } catch { /* storage unavailable */ }
+            const meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) meta.setAttribute('content', next === 'dark' ? '#0E1015' : '#EDEFF3');
         });
 
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const url = input.value.trim();
-                if (url) loadReelWithIframe(url);
+        // --- Event Listeners ---
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const url = input.value.trim();
+            if (url) {
+                loadReelWithIframe(url);
+            } else {
+                showError('Paste a Reel link first.');
+                input.focus();
             }
         });
 
+        input.addEventListener('input', () => {
+            syncClearButton();
+            if (!errorDiv.hidden) clearError();
+        });
+
+        // Auto-load when a valid Reel link is pasted into the field
+        input.addEventListener('paste', () => {
+            setTimeout(() => {
+                const value = input.value.trim();
+                if (value && extractReelId(normalizeInstagramUrl(extractCandidate(value)))) {
+                    loadReelWithIframe(value);
+                }
+            }, 0);
+        });
+
+        clearBtn.addEventListener('click', () => {
+            input.value = '';
+            syncClearButton();
+            clearError();
+            input.focus();
+        });
+
+        if (navigator.clipboard && navigator.clipboard.readText) {
+            pasteBtn.hidden = false;
+            pasteBtn.addEventListener('click', async () => {
+                try {
+                    const text = (await navigator.clipboard.readText()).trim();
+                    if (!text) {
+                        showError('Your clipboard is empty. Copy a Reel link first.');
+                        return;
+                    }
+                    input.value = text;
+                    syncClearButton();
+                    loadReelWithIframe(text);
+                } catch {
+                    input.focus();
+                    showError('Couldn’t read your clipboard. Paste the link into the field instead.');
+                }
+            });
+        }
+
         copyBtn.addEventListener('click', copyShareLink);
+
+        if (navigator.share) {
+            nativeShareBtn.hidden = false;
+            nativeShareBtn.addEventListener('click', async () => {
+                try {
+                    await navigator.share({ title: BASE_TITLE, text: 'Watch this Reel', url: shareInput.value });
+                } catch { /* share sheet dismissed */ }
+            });
+        }
+
+        clearRecentBtn.addEventListener('click', () => {
+            writeRecent([]);
+            renderRecent();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) return;
+            const tag = (document.activeElement && document.activeElement.tagName) || '';
+            if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+            e.preventDefault();
+            input.focus();
+            input.select();
+        });
+
         window.addEventListener('popstate', loadFromParams);
 
         // --- Load on startup ---
+        resetStage();
+        renderRecent();
+        syncClearButton();
         loadFromParams();
     </script>
 
